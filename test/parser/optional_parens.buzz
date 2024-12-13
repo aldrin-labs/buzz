@@ -1,0 +1,42 @@
+// Test optional parentheses in if statements
+if x > 10 {
+    print("Greater than 10");
+} else if x < 0 {
+    print("Negative");
+} else {
+    print("Between 0 and 10");
+}
+
+// Test optional parentheses with unwrapping
+if maybeValue -> unwrapped {
+    print(unwrapped);
+}
+
+// Test optional parentheses with type casting
+if value as num: i32 {
+    print(num);
+}
+
+// Test optional parentheses in while loops
+while x < 100 {
+    x = x + 1;
+}
+
+// Test while loops with labels
+while count > 0: outer {
+    while true {
+        if count == 50 {
+            break :outer;
+        }
+        count = count - 1;
+    }
+}
+
+// Test backward compatibility with parentheses
+if (x > 10) {
+    print("Still works with parentheses");
+}
+
+while (x < 100) {
+    print("Still works with parentheses");
+}

@@ -362,6 +362,7 @@ pub const Precedence = enum(u8) {
     Bitwise, // \, &, ^
     Shift, // >>, <<
     Factor, // /, *, %
+    Lambda, // |> lambda expressions
     Unary, // +, ++, -, --, !
     Call, // call(), dot.ref, sub[script], optUnwrap?
     Primary, // literal, (grouped expression), identifier, [<type>, alist], {<a, map>, ...}
@@ -1439,7 +1440,36 @@ fn declaration(self: *Self) Error!?Ast.Node.Index {
 }
 
 fn declarationOrStatement(self: *Self, loop_scope: ?LoopScope) !?Ast.Node.Index {
-    return try self.declaration() orelse try self.statement(false, loop_scope);
+    // Handle decorators before declarations
+    var decorators = std.ArrayList(Ast.Node.Index).init(self.gc.allocator);
+    defer decorators.deinit();
+
+    while (try self.match(.Decorator)) {
+        const decorator_name = self.current_token.? - 1;
+        try decorators.append(try self.ast.appendNode(.{
+            .tag = .Decorator,
+            .location = decorator_name,
+            .end_location = decorator_name,
+            .components = .{
+                .Decorator = .{
+                    .name = decorator_name,
+                    .decorated = undefined,
+                },
+            },
+        }));
+    }
+
+    // Parse declaration or statement
+    const node = try self.declaration() orelse try self.statement(false, loop_scope);
+
+    // Attach decorators to the node if any
+    if (node != null) {
+        for (decorators.items) |decorator| {
+            self.ast.nodes.items(.components)[decorator].Decorator.decorated = node.?;
+        }
+    }
+
+    return node;
 }
 
 // When a break statement, will return index of jump to patch
@@ -3450,7 +3480,53 @@ fn list(self: *Self, _: bool) Error!Ast.Node.Index {
     const explicit_item_type: ?Ast.Node.Index = null;
     var item_type: ?*obj.ObjTypeDef = null;
 
-    // A list expression can specify its type `[<int>, ...]`
+    // Check for list comprehension syntax [expr for var in iterable]
+    if (!self.check(.RightBracket) and !self.check(.Less)) {
+        const expr = try self.expression(false);
+
+        if (try self.match(.For)) {
+            // Parse list comprehension
+            try self.consume(.Identifier, "Expected identifier after 'for'");
+            const var_name = self.current_token.? - 1;
+
+            try self.consume(.In, "Expected 'in' after identifier in list comprehension");
+            const iterable = try self.expression(false);
+
+            // Optional filter condition
+            var filter: ?Ast.Node.Index = null;
+            if (try self.match(.If)) {
+                filter = try self.expression(false);
+            }
+
+            try self.consume(.RightBracket, "Expected `]` after list comprehension");
+
+            return try self.ast.appendNode(.{
+                .tag = .ListComprehension,
+                .location = start_location,
+                .end_location = self.current_token.? - 1,
+                .type_def = try self.gc.type_registry.getTypeDef(.{
+                    .def_type = .List,
+                    .resolved_type = .{ .List = obj.ObjList.ListDef.init(
+                        self.gc.allocator,
+                        self.ast.nodes.items(.type_def)[expr],
+                    )},
+                }),
+                .components = .{
+                    .ListComprehension = .{
+                        .expression = expr,
+                        .var_name = var_name,
+                        .iterable = iterable,
+                        .filter = filter,
+                    },
+                },
+            });
+        }
+
+        // Not a comprehension, treat as normal list
+        try items.append(expr);
+    }
+
+    // Regular list parsing
     if (try self.match(.Less)) {
         const item_type_node = try self.parseTypeDef(null, true);
         item_type = self.ast.nodes.items(.type_def)[item_type_node];
@@ -4893,9 +4969,8 @@ fn @"and"(self: *Self, _: bool, left: Ast.Node.Index) Error!Ast.Node.Index {
 fn @"if"(self: *Self, is_statement: bool, loop_scope: ?LoopScope) Error!Ast.Node.Index {
     const start_location = self.current_token.? - 1;
 
-    try self.consume(.LeftParen, "Expected `(` after `if`.");
-
     try self.beginScope(null);
+    const has_parens = try self.match(.LeftParen);
     const condition = try self.expression(false);
     const condition_type_def = self.ast.nodes.items(.type_def)[condition];
 
