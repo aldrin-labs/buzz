@@ -124,6 +124,12 @@ pub const Type = enum {
 
     Or, // or
     And, // and
+    Not, // not
+    In, // in
+    Is, // is
+    Decorator, // @
+    Lambda, // |>
+    ListComprehension, // [x for x in xs]
     Return, // return
     If, // if
     Else, // else
@@ -134,8 +140,6 @@ pub const Type = enum {
     ForEach, // foreach
     Break, // break
     Continue, // continue
-    In, // in
-    Is, // is
     IntegerValue, // 123
     FloatValue, // 123.2
     String, // "hello"
@@ -234,5 +238,6 @@ pub const keywords = std.StaticStringMap(Type).initComptime(
         .{ "while", .While },
         .{ "yield", .Yield },
         .{ "zdef", .Zdef },
+        .{ "not", .Not },
     },
 );

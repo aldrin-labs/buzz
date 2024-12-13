@@ -90,6 +90,7 @@ pub const Node = struct {
         Break,
         Call,
         Continue,
+        Decorator,  // Added for @decorator support
         Dot,
         DoUntil,
         Enum,
@@ -106,6 +107,7 @@ pub const Node = struct {
         GenericResolve,
         GenericResolveType,
         GenericType,
+        Lambda,  // Added for |> lambda support
         Grouping,
         If,
         Import,
@@ -113,6 +115,7 @@ pub const Node = struct {
         Is,
         List,
         ListType,
+        ListComprehension,  // Added for [x for x in xs]
         Map,
         MapType,
         Namespace,
@@ -152,6 +155,8 @@ pub const Node = struct {
                 => true,
                 else => false,
             };
+        }
+    };
         }
     };
 
@@ -220,8 +225,20 @@ pub const Node = struct {
         While: WhileDoUntil,
         Yield: Node.Index,
         Zdef: Zdef,
+        Decorator: struct {
+            name: TokenIndex,
+            decorated: Node.Index,
+        },
+        ListComprehension: struct {
+            item: Node.Index,
+            iterator: Node.Index,
+            condition: ?Node.Index,
+        },
+        Lambda: struct {
+            params: []const Node.Index,
+            body: Node.Index,
+        },
     };
-};
 
 pub fn usesFiber(self: Self, node: Node.Index, seen: *std.AutoHashMap(Node.Index, void)) !bool {
     if (seen.get(node) != null) {

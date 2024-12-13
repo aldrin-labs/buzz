@@ -51,7 +51,30 @@ pub fn scanToken(self: *Self) !Token {
 
     const char: u8 = self.advance();
     return try switch (char) {
-        'a'...'z', 'A'...'Z' => try self.identifier(),
+        'a'...'z', 'A'...'Z' => {
+            while (isLetter(self.peek()) or isNumber(self.peek()) or self.peek() == '_') {
+                _ = self.advance();
+            }
+
+            const lexeme = self.source[self.current.start..self.current.offset];
+            return self.makeToken(
+                if (std.mem.eql(u8, lexeme, "and"))
+                    .And
+                else if (std.mem.eql(u8, lexeme, "or"))
+                    .Or
+                else if (std.mem.eql(u8, lexeme, "not"))
+                    .Not
+                else if (std.mem.eql(u8, lexeme, "in"))
+                    .In
+                else if (std.mem.eql(u8, lexeme, "is"))
+                    .Is
+                else
+                    .Identifier,
+                lexeme,
+                null,
+                null,
+            );
+        },
         '_' => self.makeToken(
             .Identifier,
             self.source[self.current.start..self.current.offset],
@@ -133,7 +156,7 @@ pub fn scanToken(self: *Self) !Token {
         '"' => try self.string(false),
         '`' => try self.string(true),
         '\'' => self.byte(),
-        '@' => try self.atIdentifier(),
+        '@' => self.makeToken(.Decorator, null, null, null),
         '$' => try self.pattern(),
         '\\' => self.makeToken(.AntiSlash, null, null, null),
 
