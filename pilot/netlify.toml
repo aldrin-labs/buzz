@@ -1,7 +1,7 @@
 [build]
   base = "./"
   publish = "dist/"
-  command = "npm install && npm run build"
+  command = "cd /opt/build/repo/pilot && npm install && npm run build"
 
 [[redirects]]
   from = "/*"
