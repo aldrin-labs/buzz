@@ -53,9 +53,7 @@ const App: React.FC = () => {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 500px), 1fr))',
             gap: '4rem',
-            width: '100%',
-            maxWidth: '1200px',
-            margin: '0 auto'
+            width: '100%'
           }}>
             <Text variant="h2" style={{
               color: 'var(--theme-headline)',
@@ -65,7 +63,13 @@ const App: React.FC = () => {
               Features
             </Text>
 
-            <Container style={{ height: 'auto' }}>
+            <Container style={{
+              height: 'auto',
+              width: '100%',
+              padding: '2.5rem',
+              background: 'var(--theme-gradient-card)',
+              borderRadius: '12px'
+            }}>
               <Text variant="h3" color="secondary">Security First</Text>
               <Text color="secondary" style={{ marginBottom: '2rem' }}>
                 Built-in decorators for ownership verification and reentrancy protection.
@@ -73,7 +77,13 @@ const App: React.FC = () => {
               <CodeBlock code={securityExample} language="python" />
             </Container>
 
-            <Container style={{ height: 'auto' }}>
+            <Container style={{
+              height: 'auto',
+              width: '100%',
+              padding: '2.5rem',
+              background: 'var(--theme-gradient-card)',
+              borderRadius: '12px'
+            }}>
               <Text variant="h3" color="secondary">AI Ready</Text>
               <Text color="secondary" style={{ marginBottom: '2rem' }}>
                 First-class support for on-chain AI agents and autonomous programs.
@@ -81,7 +91,13 @@ const App: React.FC = () => {
               <CodeBlock code={aiExample} language="python" />
             </Container>
 
-            <Container style={{ height: 'auto' }}>
+            <Container style={{
+              height: 'auto',
+              width: '100%',
+              padding: '2.5rem',
+              background: 'var(--theme-gradient-card)',
+              borderRadius: '12px'
+            }}>
               <Text variant="h3" color="secondary">Clean Syntax</Text>
               <Text color="secondary" style={{ marginBottom: '2rem' }}>
                 Python-like syntax for writing smart contracts.
@@ -89,7 +105,13 @@ const App: React.FC = () => {
               <CodeBlock code={syntaxExample} language="python" />
             </Container>
 
-            <Container style={{ height: 'auto' }}>
+            <Container style={{
+              height: 'auto',
+              width: '100%',
+              padding: '2.5rem',
+              background: 'var(--theme-gradient-card)',
+              borderRadius: '12px'
+            }}>
               <Text variant="h3" color="secondary">Solana Native</Text>
               <Text color="secondary" style={{ marginBottom: '2rem' }}>
                 Native Solana integration with built-in account management.

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Text } from './sacred'
+import { Text, Container } from './sacred'
 import Prism from 'prismjs'
 import 'prismjs/plugins/line-numbers/prism-line-numbers'
 import 'prismjs/plugins/line-numbers/prism-line-numbers.css'
@@ -50,13 +50,13 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
   }, [code, language])
 
   return (
-    <div style={{ width: '100%', margin: '0 auto' }}>
+    <Container style={{ width: '100%', padding: 0, background: 'transparent', boxShadow: 'none' }}>
       {title && (
         <Text variant="h3" color="secondary" style={{ marginBottom: '1ch' }}>
           {title}
         </Text>
       )}
-      <div style={{
+      <Container style={{
         border: '1px solid var(--theme-border)',
         overflow: 'hidden',
         background: 'var(--vscode-background)',
@@ -64,7 +64,8 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         borderRadius: '8px',
         width: '100%',
         maxWidth: '100%',
-        margin: '0 auto'
+        margin: '0 auto',
+        padding: 0
       }}>
         <pre
           ref={preRef}
@@ -96,7 +97,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
             {code}
           </code>
         </pre>
-      </div>
-    </div>
+      </Container>
+    </Container>
   )
 }
