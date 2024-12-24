@@ -30,7 +30,8 @@ const App: React.FC = () => {
           <div style={{
             maxWidth: '80ch',
             margin: '0 auto',
-            textAlign: 'center'
+            textAlign: 'center',
+            width: '100%'
           }}>
             <Text variant="h1" style={{
               fontSize: '48px',
@@ -51,14 +52,15 @@ const App: React.FC = () => {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 500px), 1fr))',
-            gap: '4rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 450px), 1fr))',
+            gap: '3rem',
             width: '100%'
           }}>
             <Text variant="h2" style={{
               color: 'var(--theme-headline)',
               gridColumn: '1 / -1',
-              textAlign: 'center'
+              textAlign: 'center',
+              marginBottom: '2rem'
             }}>
               Features
             </Text>
@@ -68,10 +70,13 @@ const App: React.FC = () => {
               width: '100%',
               padding: '2.5rem',
               background: 'var(--theme-gradient-card)',
-              borderRadius: '12px'
+              borderRadius: '12px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.5rem'
             }}>
               <Text variant="h3" color="secondary">Security First</Text>
-              <Text color="secondary" style={{ marginBottom: '2rem' }}>
+              <Text color="secondary">
                 Built-in decorators for ownership verification and reentrancy protection.
               </Text>
               <CodeBlock code={securityExample} language="python" />
@@ -82,10 +87,13 @@ const App: React.FC = () => {
               width: '100%',
               padding: '2.5rem',
               background: 'var(--theme-gradient-card)',
-              borderRadius: '12px'
+              borderRadius: '12px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.5rem'
             }}>
               <Text variant="h3" color="secondary">AI Ready</Text>
-              <Text color="secondary" style={{ marginBottom: '2rem' }}>
+              <Text color="secondary">
                 First-class support for on-chain AI agents and autonomous programs.
               </Text>
               <CodeBlock code={aiExample} language="python" />
@@ -96,10 +104,13 @@ const App: React.FC = () => {
               width: '100%',
               padding: '2.5rem',
               background: 'var(--theme-gradient-card)',
-              borderRadius: '12px'
+              borderRadius: '12px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.5rem'
             }}>
               <Text variant="h3" color="secondary">Clean Syntax</Text>
-              <Text color="secondary" style={{ marginBottom: '2rem' }}>
+              <Text color="secondary">
                 Python-like syntax for writing smart contracts.
               </Text>
               <CodeBlock code={syntaxExample} language="python" />
@@ -110,10 +121,13 @@ const App: React.FC = () => {
               width: '100%',
               padding: '2.5rem',
               background: 'var(--theme-gradient-card)',
-              borderRadius: '12px'
+              borderRadius: '12px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.5rem'
             }}>
               <Text variant="h3" color="secondary">Solana Native</Text>
-              <Text color="secondary" style={{ marginBottom: '2rem' }}>
+              <Text color="secondary">
                 Native Solana integration with built-in account management.
               </Text>
               <CodeBlock code={solanaExample} language="python" />
