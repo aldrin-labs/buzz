@@ -32,10 +32,11 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
           if (line.trim() === '') return ''
           const indent = line.search(/\S/)
           if (indent === -1) return line
-          const spaces = ' '.repeat(Math.floor(indent / 4) * 4)
+          const spaces = ' '.repeat(Math.floor(indent / 2) * 2)
           return spaces + line.trim()
         })
         .join('\n')
+        .trim()
 
       codeRef.current.innerHTML = formattedCode
       preRef.current.className = `language-${language} line-numbers`
@@ -73,9 +74,11 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
           style={{
             margin: 0,
             background: 'transparent',
-            padding: '2ch',
+            padding: '1.5rem',
             width: '100%',
-            overflowX: 'auto'
+            overflowX: 'auto',
+            fontSize: '0.9rem',
+            lineHeight: '1.5'
           }}
           data-start="1"
         >
@@ -84,11 +87,11 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
             className={`language-${language}`}
             style={{
               whiteSpace: 'pre',
-              tabSize: 4,
+              tabSize: 2,
               background: 'transparent',
-              fontFamily: 'var(--font-family)',
-              fontSize: 'var(--font-size)',
-              lineHeight: 'var(--theme-line-height-base)',
+              fontFamily: 'var(--font-family-mono, monospace)',
+              fontSize: 'inherit',
+              lineHeight: 'inherit',
               color: 'var(--theme-text)',
               display: 'block',
               width: '100%'
