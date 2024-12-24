@@ -23,7 +23,7 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 2rem 15%;
   border: none;
   border-radius: 0;
   background: none;
@@ -31,7 +31,7 @@
   backdrop-filter: none;
 
   @media (min-width: 768px) {
-    padding: 0 4rem;
+    padding: 4rem 15%;
   }
 
   &:hover {
@@ -50,6 +50,6 @@
   }
 
   .mainContainer {
-    padding: 4rem 1rem;
+    padding: 4rem 15%;
   }
 }
