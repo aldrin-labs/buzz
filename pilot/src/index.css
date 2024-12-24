@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Color system from modal.com */
+    --color-gray-50: #f9fafb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5db;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #6b7280;
+    --color-gray-600: #4b5563;
+    --color-gray-700: #374151;
+    --color-gray-800: #1f2937;
+    --color-gray-900: #111827;
+
+    /* Theme variables */
+    --theme-background: var(--color-gray-50);
+    --theme-surface: var(--color-gray-100);
+    --theme-text: var(--color-gray-900);
+    --theme-text-secondary: var(--color-gray-600);
+    --theme-text-tertiary: var(--color-gray-500);
+    --theme-headline: var(--color-gray-800);
+    --theme-headline-secondary: var(--color-gray-600);
+    --theme-border: var(--color-gray-200);
+    --theme-code-bg: var(--color-gray-50);
+
+    /* Gradients */
+    --gradient-subtle: linear-gradient(to bottom right, var(--color-gray-50), var(--color-gray-100));
+    --gradient-emphasis: linear-gradient(to bottom right, var(--color-gray-100), var(--color-gray-200));
+    --gradient-surface: linear-gradient(180deg, var(--color-gray-50) 0%, var(--color-gray-100) 100%);
+    --gradient-card: linear-gradient(145deg, #ffffff 0%, var(--color-gray-50) 100%);
+
+    /* Font settings */
+    --font-family: var(--font-mono, ui-monospace, 'Geist-Mono-Regular', monospace);
+    --font-size: 14px;
+    --line-height-base: 1.6;
+
+    /* Grid */
+    --grid-color: rgba(0, 0, 0, 0.03);
+  }
+
+  body {
+    background: var(--theme-background);
+    color: var(--theme-text);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    line-height: var(--line-height-base);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--theme-headline);
+  }
+
+  button {
+    @apply bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-md shadow-sm
+           hover:from-gray-50 hover:to-gray-100 active:from-gray-100 active:to-gray-200
+           transition-all duration-200;
+    font-family: var(--font-family);
+  }
+
+  input, textarea {
+    @apply bg-gradient-to-b from-white to-gray-50 border border-gray-200 rounded-md
+           focus:ring-2 focus:ring-blue-500/20 transition-all duration-200;
+    font-family: var(--font-family);
+  }
+}
+
+.grid-background {
+  background-size: 8px 8px;
+  background-image:
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px),
+    var(--gradient-surface);
+}
+

@@ -1,0 +1,135 @@
+:root {
+  --vscode-white: var(--theme-background);
+  --vscode-black: var(--theme-text);
+  --vscode-gray: var(--theme-text-secondary);
+  --vscode-border: var(--theme-border);
+  --vscode-keyword: #0550ae;
+  --vscode-type: #0a7b83;
+  --vscode-string: #0a7b83;
+  --vscode-comment: #64748b;
+  --vscode-variable: #953800;
+  --vscode-function: #8250df;
+  --vscode-decorator: #0550ae;
+  --vscode-background: var(--theme-gradient-code);
+  --vscode-line-number: #94a3b8;
+  --vscode-line-highlight: rgba(0, 0, 0, 0.02);
+}
+
+pre[class*="language-"],
+code[class*="language-"] {
+  color: var(--vscode-black);
+  font-family: var(--font-family);
+  direction: ltr;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  line-height: 1.6;
+  tab-size: 4;
+  hyphens: none;
+  background: var(--vscode-background) !important;
+  text-shadow: none !important;
+  padding: 3ch;
+  margin: 0;
+  border-radius: 8px;
+}
+
+.code-block {
+  background: var(--vscode-background) !important;
+  border: 1px solid var(--vscode-border) !important;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  margin: 2ch 0;
+  box-shadow: var(--theme-shadow);
+}
+
+.line-numbers .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 2ch;
+  font-size: 100%;
+  left: 0;
+  width: 3.5ch;
+  letter-spacing: -1px;
+  border-right: 1px solid var(--vscode-border);
+  user-select: none;
+  padding: 0;
+  background: var(--vscode-background);
+}
+
+.line-numbers-rows > span {
+  display: block;
+  counter-increment: linenumber;
+  color: var(--vscode-line-number) !important;
+}
+
+.line-numbers-rows > span:before {
+  content: counter(linenumber);
+  display: block;
+  padding-right: 0.8ch;
+  text-align: right;
+}
+
+.token.comment { color: var(--vscode-comment) !important; }
+.token.decorator { color: var(--vscode-decorator) !important; }
+.token.keyword { color: var(--vscode-keyword) !important; }
+.token.string { color: var(--vscode-string) !important; }
+.token.function { color: var(--vscode-function) !important; }
+.token.class-name { color: var(--vscode-type) !important; }
+.token.builtin { color: var(--vscode-keyword) !important; }
+.token.number { color: var(--vscode-variable) !important; }
+.token.operator { color: var(--vscode-black) !important; }
+.token.punctuation { color: var(--vscode-gray) !important; }
+
+.code-block pre {
+  margin: 0;
+  padding: 2ch 2ch 2ch 6ch;
+}
+
+pre[class*="language-"].line-numbers {
+  position: relative;
+  padding-left: 5ch;
+  counter-reset: linenumber;
+  background: var(--vscode-background) !important;
+  color: var(--vscode-black) !important;
+}
+
+pre[class*="language-"].line-numbers > code {
+  position: relative;
+  white-space: inherit;
+  padding: 0;
+  margin-left: 0;
+}
+
+.code-block + .code-block {
+  margin-top: 3ch;
+}
+
+.code-block,
+.code-block pre,
+.code-block code {
+  background: var(--vscode-background) !important;
+  color: var(--vscode-black) !important;
+}
+
+.token.decorator {
+  display: block;
+  margin-bottom: 0.5ch;
+}
+
+.line-numbers-rows {
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 100% !important;
+  width: 3ch !important;
+  border-right: 1px solid var(--vscode-border) !important;
+  background: var(--vscode-background) !important;
+}
+
+.code-block:hover {
+  box-shadow: var(--theme-shadow-lg);
+  transition: box-shadow 0.2s ease-in-out;
+}
