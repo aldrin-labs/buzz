@@ -1,0 +1,13 @@
+.navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  height: 64px;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  background: var(--theme-background-secondary);
+  border-bottom: 1px solid var(--theme-border);
+}

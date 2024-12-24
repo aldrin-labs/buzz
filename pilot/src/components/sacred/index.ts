@@ -1,5 +1,6 @@
-export { default as ActionBar } from './ActionBar'
+export { default as DefaultActionBar } from './DefaultActionBar'
 export { default as Grid } from './Grid'
 export { default as Text } from './Text'
 export { default as Container } from './Container'
 export { default as Block } from './Block'
+export { default as ButtonGroup } from './ButtonGroup'

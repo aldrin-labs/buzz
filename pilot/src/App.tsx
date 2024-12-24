@@ -1,38 +1,35 @@
-import { ActionBar, Grid, Text, Container } from './components/sacred'
+import { DefaultActionBar, Grid, Text, Container } from './components/sacred'
 import { CodeBlock } from "./components/CodeBlock"
 import { securityExample, aiExample, syntaxExample, solanaExample } from "./lib/code-examples"
 import { Link } from 'react-router-dom'
+import styles from './App.module.scss'
 
 const App: React.FC = () => {
-  const actionBarItems = [
-    {
-      id: 'docs',
-      hotkey: 'd',
-      body: <Link to="/docs"><Text>DOCS</Text></Link>,
-      onClick: () => {}
-    },
-    {
-      id: 'create-dao',
-      hotkey: 'c',
-      body: <Link to="/create-dao"><Text>CREATE DAO</Text></Link>,
-      onClick: () => {}
-    }
-  ];
-
   return (
     <div className="app">
-      <ActionBar items={actionBarItems}>
-        <Text style={{ fontWeight: 500 }}>BUZZ LANG</Text>
-      </ActionBar>
+      <DefaultActionBar
+        items={[
+          {
+            hotkey: '',
+            onClick: () => {},
+            body: 'BUZZ LANG'
+          },
+          {
+            hotkey: '',
+            onClick: () => {},
+            body: <Link to="/docs">DOCS</Link>
+          },
+          {
+            hotkey: '',
+            onClick: () => {},
+            body: <Link to="/create-dao">CREATE DAO</Link>
+          }
+        ]}
+      />
 
       <Container isMain>
         <Grid>
-          <div style={{
-            maxWidth: '80ch',
-            margin: '0 auto',
-            textAlign: 'center',
-            width: '100%'
-          }}>
+          <div className={styles.heroSection}>
             <Text variant="h1" style={{
               fontSize: '48px',
               color: 'var(--theme-headline-main)',
@@ -50,88 +47,48 @@ const App: React.FC = () => {
             </Text>
           </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 450px), 1fr))',
-            gap: '3rem',
-            width: '100%'
-          }}>
+          <div className={styles.featuresSection}>
             <Text variant="h2" style={{
               color: 'var(--theme-headline)',
-              gridColumn: '1 / -1',
               textAlign: 'center',
-              marginBottom: '2rem'
+              marginBottom: '4rem'
             }}>
               Features
             </Text>
 
-            <Container style={{
-              height: 'auto',
-              width: '100%',
-              padding: '2.5rem',
-              background: 'var(--theme-gradient-card)',
-              borderRadius: '12px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem'
-            }}>
-              <Text variant="h3" color="secondary">Security First</Text>
-              <Text color="secondary">
-                Built-in decorators for ownership verification and reentrancy protection.
-              </Text>
-              <CodeBlock code={securityExample} language="python" />
-            </Container>
+            <div className={styles.featureCards}>
+              <Container className={styles.featureCard}>
+                <Text variant="h3" color="secondary">Security First</Text>
+                <Text color="secondary">
+                  Built-in decorators for ownership verification and reentrancy protection.
+                </Text>
+                <CodeBlock code={securityExample} language="python" />
+              </Container>
 
-            <Container style={{
-              height: 'auto',
-              width: '100%',
-              padding: '2.5rem',
-              background: 'var(--theme-gradient-card)',
-              borderRadius: '12px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem'
-            }}>
-              <Text variant="h3" color="secondary">AI Ready</Text>
-              <Text color="secondary">
-                First-class support for on-chain AI agents and autonomous programs.
-              </Text>
-              <CodeBlock code={aiExample} language="python" />
-            </Container>
+              <Container className={styles.featureCard}>
+                <Text variant="h3" color="secondary">AI Ready</Text>
+                <Text color="secondary">
+                  First-class support for on-chain AI agents and autonomous programs.
+                </Text>
+                <CodeBlock code={aiExample} language="python" />
+              </Container>
 
-            <Container style={{
-              height: 'auto',
-              width: '100%',
-              padding: '2.5rem',
-              background: 'var(--theme-gradient-card)',
-              borderRadius: '12px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem'
-            }}>
-              <Text variant="h3" color="secondary">Clean Syntax</Text>
-              <Text color="secondary">
-                Python-like syntax for writing smart contracts.
-              </Text>
-              <CodeBlock code={syntaxExample} language="python" />
-            </Container>
+              <Container className={styles.featureCard}>
+                <Text variant="h3" color="secondary">Clean Syntax</Text>
+                <Text color="secondary">
+                  Python-like syntax for writing smart contracts.
+                </Text>
+                <CodeBlock code={syntaxExample} language="python" />
+              </Container>
 
-            <Container style={{
-              height: 'auto',
-              width: '100%',
-              padding: '2.5rem',
-              background: 'var(--theme-gradient-card)',
-              borderRadius: '12px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem'
-            }}>
-              <Text variant="h3" color="secondary">Solana Native</Text>
-              <Text color="secondary">
-                Native Solana integration with built-in account management.
-              </Text>
-              <CodeBlock code={solanaExample} language="python" />
-            </Container>
+              <Container className={styles.featureCard}>
+                <Text variant="h3" color="secondary">Solana Native</Text>
+                <Text color="secondary">
+                  Native Solana integration with built-in account management.
+                </Text>
+                <CodeBlock code={solanaExample} language="python" />
+              </Container>
+            </div>
           </div>
         </Grid>
       </Container>

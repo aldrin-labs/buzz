@@ -1,0 +1,11 @@
+# Landing Page Improvements
+- [x] Replace ActionBar with sacred UI Navigation component
+- [x] Implement proper hero section with sacred UI components
+- [x] Update features section with horizontal-stack-marketing layout
+- [x] Integrate @uiw/react-prismjs for code blocks
+- [x] Add 5rem margin between code blocks
+- [x] Disable text wrapping in code blocks
+- [x] Add proper padding (8rem) to match design
+- [x] Ensure consistent styling across all components
+- [x] Move inline styles to App.module.scss
+- [x] Update Grid component with proper spacing
