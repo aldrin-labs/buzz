@@ -1,27 +1,20 @@
-import styles from '@components/ActionBar.module.scss';
-
+import styles from './ActionBar.module.scss';
 import * as React from 'react';
-import * as Utilities from '@common/utilities';
-
-import ButtonGroup from '@components/ButtonGroup';
-
-interface ActionBarItem {
-  hotkey: string;
-  onClick?: () => void;
-  selected?: boolean;
-  body: React.ReactNode;
-}
+import * as Utilities from '../../common/utilities';
+import { ButtonGroup, ButtonGroupItem } from './ButtonGroup';
 
 interface ActionBarProps {
-  items: ActionBarItem[];
+  items: ButtonGroupItem[];
+  isFull?: boolean;
 }
 
-const ActionBar: React.FC<ActionBarProps> = ({ items }) => {
+const ActionBar: React.FC<ActionBarProps> = ({ items, isFull }) => {
   return (
-    <div className={styles.root}>
-      <ButtonGroup items={items} />
+    <div className={Utilities.classNames(styles.root)}>
+      <ButtonGroup items={items} isFull={isFull} />
     </div>
   );
 };
 
 export default ActionBar;
+export type { ActionBarProps };

@@ -6,8 +6,10 @@ import { classNames } from '../../lib/utilities';
 import { ActionButton } from './ActionButton';
 
 export interface ButtonGroupItem {
+  id?: string;  // Optional id property for compatibility
   hotkey: string;
   onClick: () => void;
+  selected?: boolean;  // Optional selected property for compatibility
   body: React.ReactNode;
 }
 
