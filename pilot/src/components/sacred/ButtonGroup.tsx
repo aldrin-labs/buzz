@@ -5,18 +5,18 @@ import * as React from 'react';
 import { classNames } from '../../lib/utilities';
 import { ActionButton } from './ActionButton';
 
-interface ButtonGroupItem {
+export interface ButtonGroupItem {
   hotkey: string;
   onClick: () => void;
   body: React.ReactNode;
 }
 
-interface ButtonGroupProps {
+export interface ButtonGroupProps {
   items?: ButtonGroupItem[];
   isFull?: boolean;
 }
 
-const ButtonGroup: React.FC<ButtonGroupProps> = (props) => {
+export const ButtonGroup: React.FC<ButtonGroupProps> = (props) => {
   if (!props.items) {
     return null;
   }

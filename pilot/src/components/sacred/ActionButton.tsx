@@ -2,14 +2,14 @@ import styles from './ActionButton.module.scss';
 import * as React from 'react';
 import { classNames } from '../../lib/utilities';
 
-interface ActionButtonProps {
+export interface ActionButtonProps {
   onClick?: () => void;
   hotkey?: string;
   children?: React.ReactNode;
   style?: React.CSSProperties;
 }
 
-const ActionButton: React.FC<ActionButtonProps> = ({ onClick, hotkey, children, style }) => {
+export const ActionButton: React.FC<ActionButtonProps> = ({ onClick, hotkey, children, style }) => {
   return (
     <div
       className={classNames(styles.root)}

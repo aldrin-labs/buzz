@@ -15,8 +15,7 @@ export function pluralize(text: string, count: number) {
 // classNames at line 274
 // isEmpty at line 152
 
-
-export function getOrdinalNumber(n) {
+export function getOrdinalNumber(n: number): string {
   return n + (n > 0 ? ['th', 'st', 'nd', 'rd'][(n > 3 && n < 21) || n % 10 > 3 ? 0 : n % 10] : '');
 }
 
@@ -132,7 +131,7 @@ export function toDateISOString(data: string) {
   return formattedDate;
 }
 
-export function elide(string, length = 140, emptyState = '...') {
+export function elide(string: string, length = 140, emptyState = '...'): string {
   if (isEmpty(string)) {
     return emptyState;
   }
@@ -180,7 +179,7 @@ export function isEmpty(text: any) {
   return Boolean(!text.trim());
 }
 
-export function createSlug(text: any) {
+export function createSlug(text: string): string {
   if (isEmpty(text)) {
     return 'untitled';
   }
@@ -193,7 +192,7 @@ export function createSlug(text: any) {
     .toString()
     .toLowerCase()
     .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(p, (c) => b.charAt(a.indexOf(c))) // Replace special chars
+    .replace(p, (c: string) => b.charAt(a.indexOf(c))) // Replace special chars
     .replace(/&/g, '-and-') // Replace & with 'and'
     .replace(/[^\w\-]+/g, '') // Remove all non-word chars
     .replace(/\-\-+/g, '-') // Replace multiple - with single -
@@ -278,36 +277,24 @@ export function timeAgo(dateInput: Date | string | number): string {
   return formattedDate;
 }
 
-export function classNames(...args: any[]): string {
-  let classes: string[] = [];
+export function classNames(...args: (string | undefined | null | false | Record<string, boolean>)[]): string {
+  const classes: string[] = [];
 
-  for (let i = 0; i < arguments.length; i++) {
-    let arg = arguments[i];
-    if (!arg) continue;
+  args.forEach((arg) => {
+    if (!arg) return;
 
-    let argType = typeof arg;
+    const argType = typeof arg;
 
-    if (argType === 'string' || argType === 'number') {
-      classes.push(arg);
-    } else if (Array.isArray(arg)) {
-      if (arg.length) {
-        let inner = classNames.apply(null, arg);
-        if (inner) {
-          classes.push(inner);
-        }
-      }
+    if (argType === 'string') {
+      classes.push(arg as string);
     } else if (argType === 'object') {
-      if (arg.toString !== Object.prototype.toString) {
-        classes.push(arg.toString());
-      } else {
-        for (let key in arg) {
-          if (hasOwn.call(arg, key) && arg[key]) {
-            classes.push(key);
-          }
+      Object.keys(arg as Record<string, boolean>).forEach((key) => {
+        if ((arg as Record<string, boolean>)[key]) {
+          classes.push(key);
         }
-      }
+      });
     }
-  }
+  });
 
   return classes.join(' ');
 }
@@ -322,12 +309,11 @@ export async function generateNonce() {
   return result;
 }
 
-export function filterUndefined(obj) {
-  const res = {};
-  Object.keys(obj)
-    .filter((k) => obj[k] !== undefined)
-    .forEach((k) => (res[k] = obj[k]));
-  return res;
+export function filterUndefined<T extends Record<string, unknown>>(obj: T): Partial<T> {
+  const filtered = Object.fromEntries(
+    Object.entries(obj).filter(([_, value]) => value !== undefined)
+  ) as Partial<T>;
+  return filtered;
 }
 
 export const isFocusableElement = (element: EventTarget | null): element is HTMLElement => {

@@ -3,6 +3,9 @@
   publish = "dist/"
   command = "npm install && npm run build"
 
+[build.environment]
+  NODE_VERSION = "20.18.0"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
