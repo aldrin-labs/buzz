@@ -1,5 +1,6 @@
 const std = @import("std");
 const idl = @import("../idl.zig");
+const solana = @import("../solana.zig");
 
 pub const DeployOptions = struct {
     network: []const u8 = "devnet",
@@ -65,18 +66,22 @@ fn generateProjectIDL(allocator: std.mem.Allocator, options: DeployOptions) ![]c
 }
 
 fn performDeployment(allocator: std.mem.Allocator, idl_content: []const u8, options: DeployOptions) !void {
-    _ = allocator;
-    _ = idl_content;
-    
-    // TODO: Implement deployment steps
-    // 1. Parse IDL JSON to get program interface
-    // 2. Build project using IDL information
-    // 3. Validate program against IDL
-    // 4. Deploy to specified network
-    // 5. Verify deployment matches IDL
-    std.debug.print("Deployment steps:\n", .{});
-    std.debug.print("1. Building project...\n", .{});
-    std.debug.print("2. Validating configuration...\n", .{});
-    std.debug.print("3. Deploying to {s}...\n", .{options.network});
-    std.debug.print("4. Verifying deployment...\n", .{});
+    var client = solana.SolanaClient.init(allocator, options.network);
+    defer client.deinit();
+
+    // Build project
+    std.debug.print("Building project...\n", .{});
+    const program_path = try std.fs.path.join(allocator, &[_][]const u8{ options.project_path, "target", "deploy" });
+    defer allocator.free(program_path);
+
+    // Deploy program and get program ID
+    std.debug.print("Deploying to {s}...\n", .{options.network});
+    const program_id = try client.deployProgram(program_path, idl_content);
+    defer allocator.free(program_id);
+
+    // Verify deployment
+    std.debug.print("Verifying deployment...\n", .{});
+    try client.verifyDeployment(program_id);
+
+    std.debug.print("Successfully deployed program {s} to {s}\n", .{ program_id, options.network });
 }
