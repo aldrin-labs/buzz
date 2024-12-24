@@ -1,7 +1,4 @@
 .code-block {
-  margin: 5rem;
-  background: transparent !important;
-  padding: 0 !important;
   width: 100%;
   overflow-x: auto;
   font-size: 0.9rem;
@@ -13,14 +10,12 @@
 .code-block code {
   white-space: nowrap;
   tab-size: 2;
-  background: transparent;
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
   color: var(--theme-text);
   display: block;
   width: 100%;
-  padding: 1.5rem 1.5rem 1.5rem 3.5rem;
 }
 
 .w-prismjs {
@@ -30,7 +25,7 @@
 .w-prismjs .line-numbers-rows {
   position: absolute;
   pointer-events: none;
-  top: 1.5rem;
+  top: 0;
   left: 0;
   width: 3rem;
   letter-spacing: -1px;
@@ -38,8 +33,8 @@
   user-select: none;
   counter-reset: linenumber;
   background: var(--vscode-background);
-  height: calc(100% - 3rem);
-  padding: 0 0.8rem;
+  height: 100%;
+  padding: 3.5rem 0.8rem;
   text-align: right;
 }
 
@@ -55,6 +50,5 @@
 }
 
 .code-block:hover {
-  box-shadow: var(--theme-shadow-lg);
   transition: box-shadow 0.2s ease-in-out;
 }

@@ -19,30 +19,30 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
   language = "buzz"
 }) => {
   return (
-    <Container style={{ width: '100%', padding: 0, background: 'transparent', boxShadow: 'none', border: 'none' }}>
+    <Container style={{
+      border: '1px solid var(--theme-border)',
+      overflow: 'hidden',
+      background: 'var(--vscode-background)',
+      boxShadow: 'var(--theme-shadow)',
+      borderRadius: '8px',
+      width: '100%',
+      maxWidth: '100%',
+      margin: '5rem auto',
+      padding: '3.5rem'
+    }}>
       {title && (
-        <Text variant="h3" color="secondary" style={{ marginBottom: '1ch' }}>
+        <Text variant="h3" color="secondary" style={{ marginBottom: '1.5rem' }}>
           {title}
         </Text>
       )}
-      <Container style={{
-        border: '1px solid var(--theme-border)',
-        overflow: 'hidden',
-        background: 'var(--vscode-background)',
-        boxShadow: 'var(--theme-shadow)',
-        borderRadius: '8px',
-        width: '100%',
-        maxWidth: '100%',
-        margin: '0 auto',
-        padding: 0
-      }}>
+      <div style={{ overflow: 'auto' }}>
         <ReactPrism
           language={language}
           className="code-block line-numbers"
           source={code}
           prefixCls="w-prismjs"
         />
-      </Container>
+      </div>
     </Container>
   )
 }
