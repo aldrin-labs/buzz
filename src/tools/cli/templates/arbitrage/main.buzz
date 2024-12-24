@@ -1,0 +1,69 @@
+import "solana/defi" as defi;
+
+// Define pools with minimal syntax
+pool {{pool1_name}} {{asset1}} {{asset2}} {
+    fee = {{pool1_fee}}%
+    price = {{asset1}}/{{asset2}}
+}
+
+pool {{pool2_name}} {{asset1}} {{asset2}} {
+    fee = {{pool2_fee}}%
+    price = {{asset1}}/{{asset2}}
+}
+
+// Define price feeds
+feed "{{asset1}}/{{asset2}}" {
+    primary = {{primary_feed}}
+    backup = {{backup_feed}}
+    heartbeat = {{heartbeat}}
+}
+
+// Define arbitrage strategy
+strategy {{strategy_name}} {
+    entry {
+        // Enter when price difference > threshold
+        ({{pool1_name}}.price / {{pool2_name}}.price - 1) > {{entry_threshold}}
+    }
+    
+    exit {
+        // Exit when prices converge
+        ({{pool1_name}}.price / {{pool2_name}}.price - 1) < {{exit_threshold}}
+    }
+    
+    size {
+        // Size based on opportunity
+        min({{max_size}}, available_liquidity * {{liquidity_ratio}})
+    }
+}
+
+// Define the arbitrage bot
+bot {{project_name}} {
+    pools = [{{pool1_name}}, {{pool2_name}}]
+    strategy = {{strategy_name}}
+    risk = {{risk_percentage}}%
+    feeds = ["{{asset1}}/{{asset2}}"]
+    
+    execute {
+        if (strategy.should_enter(state)) {
+            const amount = strategy.position_size();
+            
+            // Execute arb
+            const bought = pools[0].swap(
+                from: "{{asset2}}",
+                to: "{{asset1}}",
+                amount: amount
+            );
+            
+            const sold = pools[1].swap(
+                from: "{{asset1}}", 
+                to: "{{asset2}}",
+                amount: bought
+            );
+            
+            record_trade(
+                profit: sold - amount,
+                fees: amount * (pools[0].fee + pools[1].fee)
+            );
+        }
+    }
+}

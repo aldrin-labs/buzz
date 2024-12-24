@@ -257,6 +257,22 @@ pub fn build(b: *Build) !void {
 
     const build_option_module = build_options.step(b);
 
+    // Add CLI tool executable
+    const cli = b.addExecutable(.{
+        .name = "buzz-cli",
+        .root_source_file = b.path("src/tools/cli/main.zig"),
+        .target = target,
+        .optimize = build_mode,
+    });
+    b.installArtifact(cli);
+
+    // Add dependencies and imports for CLI
+    cli.root_module.addImport("build_options", build_option_module);
+    cli.root_module.addImport("clap", b.dependency("clap", .{
+        .target = target,
+        .optimize = build_mode,
+    }).module("clap"));
+
     var sys_libs = std.ArrayList([]const u8).init(b.allocator);
     defer sys_libs.deinit();
     var includes = std.ArrayList([]const u8).init(b.allocator);
@@ -536,6 +552,11 @@ pub fn build(b: *Build) !void {
 
     const test_step = b.step("test", "Run all the tests");
     const run_tests = b.addRunArtifact(tests);
+
+    // Add CLI tool run step
+    const run_cli = b.addRunArtifact(cli);
+    const cli_step = b.step("cli", "Run the buzz-cli tool");
+    cli_step.dependOn(&run_cli.step);
     run_tests.cwd = b.path(".");
     run_tests.setEnvironmentVariable("BUZZ_PATH", try getBuzzPrefix(b));
     run_tests.step.dependOn(install_step); // wait for libraries to be installed

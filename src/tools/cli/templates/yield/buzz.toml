@@ -1,0 +1,23 @@
+[project]
+name = "{{project_name}}"
+version = "0.1.0"
+description = "{{description}}"
+
+[strategy]
+name = "{{strategy_name}}"
+type = "yield"
+rebalance_threshold = {{rebalance_threshold}}
+max_utilization = {{max_utilization}}
+target_utilization = {{target_utilization}}
+
+[pools]
+pool1 = "{{pool1_name}}"
+pool1_asset = "{{asset1}}"
+pool1_collateral_factor = {{collateral_factor1}}
+pool2 = "{{pool2_name}}"
+pool2_asset = "{{asset2}}"
+pool2_collateral_factor = {{collateral_factor2}}
+
+[execution]
+rebalance_interval = "{{rebalance_interval}}"
+risk_percentage = {{risk_percentage}}

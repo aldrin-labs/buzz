@@ -1,0 +1,16 @@
+[project]
+name = "{{project_name}}"
+version = "0.1.0"
+description = "{{description}}"
+
+[strategy]
+name = "{{strategy_name}}"
+type = "mean_reversion"
+window_size = {{window_size}}
+threshold = {{threshold}}
+trading_pair = "{{trading_pair}}"
+trade_amount = "{{trade_amount}}"
+asset = "{{asset}}"
+
+[program]
+id = "{{program_id}}"

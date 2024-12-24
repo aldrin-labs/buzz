@@ -1,0 +1,16 @@
+[project]
+name = "{{project_name}}"
+version = "0.1.0"
+description = "{{description}}"
+
+[agent]
+type = "simple"
+risk_percentage = {{risk_percentage}}
+ma_period = {{ma_period}}
+rsi_entry = {{rsi_entry}}
+rsi_exit = {{rsi_exit}}
+max_size = {{max_size}}
+liquidity_ratio = {{liquidity_ratio}}
+
+[pools]
+names = [{{pools}}]

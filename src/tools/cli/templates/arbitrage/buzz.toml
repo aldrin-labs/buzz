@@ -1,0 +1,30 @@
+[project]
+name = "{{project_name}}"
+version = "0.1.0"
+description = "{{description}}"
+
+[strategy]
+name = "{{strategy_name}}"
+type = "arbitrage"
+entry_threshold = {{entry_threshold}}
+exit_threshold = {{exit_threshold}}
+max_size = {{max_size}}
+liquidity_ratio = {{liquidity_ratio}}
+
+[pools]
+pool1 = "{{pool1_name}}"
+pool1_fee = {{pool1_fee}}
+pool2 = "{{pool2_name}}"
+pool2_fee = {{pool2_fee}}
+
+[assets]
+asset1 = "{{asset1}}"
+asset2 = "{{asset2}}"
+
+[feeds]
+primary = "{{primary_feed}}"
+backup = "{{backup_feed}}"
+heartbeat = {{heartbeat}}
+
+[risk]
+percentage = {{risk_percentage}}
