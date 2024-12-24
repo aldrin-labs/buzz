@@ -14,7 +14,8 @@
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@common/*": ["./src/common/*"],
-      "@modules/*": ["./src/modules/*"]
+      "@modules/*": ["./src/modules/*"],
+      "@lib/*": ["./src/lib/*"]
     }
   }
 }

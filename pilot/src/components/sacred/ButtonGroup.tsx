@@ -1,37 +1,41 @@
 'use client';
 
 import styles from './ButtonGroup.module.scss';
-
 import * as React from 'react';
-import * as Utilities from '../../common/utilities';
+import { classNames } from '../../lib/utilities';
+import { ActionButton } from './ActionButton';
 
-import ActionButton from './ActionButton';
-
-interface ButtonGroupItem {
-  id: string;  // Added unique id for key
+export interface ButtonGroupItem {
+  id?: string;  // Optional id property for compatibility
   hotkey: string;
-  onClick?: () => void;
-  selected?: boolean;
+  onClick: () => void;
+  selected?: boolean;  // Optional selected property for compatibility
   body: React.ReactNode;
 }
 
-interface ButtonGroupProps {
-  items: ButtonGroupItem[];
+export interface ButtonGroupProps {
+  items?: ButtonGroupItem[];
   isFull?: boolean;
 }
 
-const ButtonGroup: React.FC<ButtonGroupProps> = ({ items, isFull }) => {
-  if (!items) {
+export const ButtonGroup: React.FC<ButtonGroupProps> = (props) => {
+  if (!props.items) {
     return null;
   }
 
   return (
-    <div className={Utilities.classNames(styles.root, isFull ? styles.full : null)}>
-      {items.map((each) => (
-        <ActionButton key={each.id} onClick={each.onClick} hotkey={each.hotkey} isSelected={each.selected}>
-          {each.body}
-        </ActionButton>
-      ))}
+    <div className={classNames(styles.root, props.isFull ? styles.full : null)}>
+      {props.items.map((each) => {
+        return (
+          <ActionButton
+            key={each.body?.toString()}
+            onClick={each.onClick}
+            hotkey={each.hotkey}
+          >
+            {each.body}
+          </ActionButton>
+        );
+      })}
     </div>
   );
 };

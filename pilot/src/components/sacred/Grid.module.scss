@@ -1,4 +1,15 @@
 .grid {
-  display: block;
-  padding: calc(var(--font-size) * var(--theme-line-height-base)) 2ch calc(var(--font-size) * var(--theme-line-height-base)) 2ch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 6rem 15%;
+  gap: 8rem;
+
+  @media (max-width: 768px) {
+    padding: 4rem 15%;
+    gap: 6rem;
+  }
 }

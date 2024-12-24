@@ -1,0 +1,53 @@
+.navContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 8rem;
+}
+
+.navLinks {
+  display: flex;
+  gap: 2rem;
+
+  a {
+    color: var(--theme-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      color: var(--theme-text);
+    }
+  }
+}
+
+.heroSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 8rem 0;
+  text-align: center;
+  width: 100%;
+}
+
+.featuresSection {
+  width: 100%;
+  padding: 8rem 0;
+}
+
+.featureCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr));
+  gap: 3rem;
+}
+
+.featureCard {
+  padding: 2.5rem;
+  background: var(--theme-gradient-card);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}

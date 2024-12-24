@@ -34,16 +34,6 @@ code[class*="language-"] {
   border-radius: 8px;
 }
 
-.code-block {
-  background: var(--vscode-background) !important;
-  border: 1px solid var(--vscode-border) !important;
-  border-radius: 8px;
-  overflow: hidden;
-  position: relative;
-  margin: 2ch 0;
-  box-shadow: var(--theme-shadow);
-}
-
 .line-numbers .line-numbers-rows {
   position: absolute;
   pointer-events: none;
@@ -82,54 +72,7 @@ code[class*="language-"] {
 .token.operator { color: var(--vscode-black) !important; }
 .token.punctuation { color: var(--vscode-gray) !important; }
 
-.code-block pre {
-  margin: 0;
-  padding: 2ch 2ch 2ch 6ch;
-}
-
-pre[class*="language-"].line-numbers {
-  position: relative;
-  padding-left: 5ch;
-  counter-reset: linenumber;
-  background: var(--vscode-background) !important;
-  color: var(--vscode-black) !important;
-}
-
-pre[class*="language-"].line-numbers > code {
-  position: relative;
-  white-space: inherit;
-  padding: 0;
-  margin-left: 0;
-}
-
-.code-block + .code-block {
-  margin-top: 3ch;
-}
-
-.code-block,
-.code-block pre,
-.code-block code {
-  background: var(--vscode-background) !important;
-  color: var(--vscode-black) !important;
-}
-
 .token.decorator {
   display: block;
   margin-bottom: 0.5ch;
-}
-
-.line-numbers-rows {
-  top: 0 !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  height: 100% !important;
-  width: 3ch !important;
-  border-right: 1px solid var(--vscode-border) !important;
-  background: var(--vscode-background) !important;
-}
-
-.code-block:hover {
-  box-shadow: var(--theme-shadow-lg);
-  transition: box-shadow 0.2s ease-in-out;
 }

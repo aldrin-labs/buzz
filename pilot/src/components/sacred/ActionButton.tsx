@@ -1,20 +1,23 @@
 import styles from './ActionButton.module.scss';
-
 import * as React from 'react';
-import * as Utilities from '@common/utilities';
+import { classNames } from '../../lib/utilities';
 
-interface ActionButtonProps {
+export interface ActionButtonProps {
   onClick?: () => void;
-  hotkey?: any;
+  hotkey?: string;
   children?: React.ReactNode;
-  style?: any;
-  isSelected?: boolean;
+  style?: React.CSSProperties;
 }
 
-const ActionButton: React.FC<ActionButtonProps> = ({ onClick, hotkey, children, style, isSelected }) => {
+export const ActionButton: React.FC<ActionButtonProps> = ({ onClick, hotkey, children, style }) => {
   return (
-    <div className={Utilities.classNames(styles.root, isSelected ? styles.selected : null)} onClick={onClick} tabIndex={0} role="button">
-      {Utilities.isEmpty(hotkey) ? null : <span className={styles.hotkey}>{hotkey}</span>}
+    <div
+      className={classNames(styles.root)}
+      onClick={onClick}
+      tabIndex={0}
+      role="button"
+    >
+      {!hotkey ? null : <span className={styles.hotkey}>{hotkey}</span>}
       <span className={styles.content} style={style}>
         {children}
       </span>

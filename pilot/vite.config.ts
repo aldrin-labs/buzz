@@ -25,6 +25,10 @@ export default defineConfig({
       {
         find: '@modules',
         replacement: path.resolve(__dirname, 'src/modules')
+      },
+      {
+        find: '@lib',
+        replacement: path.resolve(__dirname, 'src/lib')
       }
     ]
   },

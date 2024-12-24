@@ -1,0 +1,68 @@
+.code-wrapper {
+  overflow: auto;
+  margin: 0;
+  width: 100%;
+}
+
+.code-block {
+  width: 100%;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-family: var(--font-family-mono, monospace);
+  position: relative;
+  margin: 5rem 0;
+  white-space: pre;
+  border: 1px solid var(--theme-border);
+  background: var(--vscode-background);
+  box-shadow: var(--theme-shadow);
+  border-radius: 8px;
+}
+
+.code-block code {
+  white-space: pre;
+  tab-size: 2;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: var(--theme-text);
+  display: block;
+  width: 100%;
+  padding: 3rem;
+  overflow-x: auto;
+}
+
+.w-prismjs {
+  position: relative;
+}
+
+.w-prismjs .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 6rem;
+  letter-spacing: -1px;
+  border-right: 1px solid var(--vscode-border);
+  user-select: none;
+  counter-reset: linenumber;
+  background: var(--vscode-background);
+  height: 100%;
+  padding: 0 2rem;
+  text-align: right;
+}
+
+.w-prismjs .line-numbers-rows > span {
+  display: block;
+  counter-increment: linenumber;
+  color: var(--vscode-line-number);
+  line-height: inherit;
+}
+
+.w-prismjs .line-numbers-rows > span:before {
+  content: counter(linenumber);
+}
+
+.code-block:hover {
+  transition: box-shadow 0.2s ease-in-out;
+}
