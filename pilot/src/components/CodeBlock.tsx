@@ -19,7 +19,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
   language = "buzz"
 }) => {
   return (
-    <Container style={{ width: '100%', padding: 0, background: 'transparent', boxShadow: 'none' }}>
+    <Container style={{ width: '100%', padding: 0, background: 'transparent', boxShadow: 'none', border: 'none' }}>
       {title && (
         <Text variant="h3" color="secondary" style={{ marginBottom: '1ch' }}>
           {title}

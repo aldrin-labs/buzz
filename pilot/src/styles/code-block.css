@@ -1,12 +1,13 @@
 .code-block {
   margin: 0;
-  background: transparent;
-  padding: 1.5rem;
+  background: transparent !important;
+  padding: 0 !important;
   width: 100%;
   overflow-x: auto;
   font-size: 0.9rem;
   line-height: 1.5;
   font-family: var(--font-family-mono, monospace);
+  position: relative;
 }
 
 .code-block code {
@@ -19,4 +20,41 @@
   color: var(--theme-text);
   display: block;
   width: 100%;
+  padding: 1.5rem 1.5rem 1.5rem 3.5rem;
+}
+
+.w-prismjs {
+  position: relative;
+}
+
+.w-prismjs .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 1.5rem;
+  left: 0;
+  width: 3rem;
+  letter-spacing: -1px;
+  border-right: 1px solid var(--vscode-border);
+  user-select: none;
+  counter-reset: linenumber;
+  background: var(--vscode-background);
+  height: calc(100% - 3rem);
+  padding: 0 0.8rem;
+  text-align: right;
+}
+
+.w-prismjs .line-numbers-rows > span {
+  display: block;
+  counter-increment: linenumber;
+  color: var(--vscode-line-number);
+  line-height: inherit;
+}
+
+.w-prismjs .line-numbers-rows > span:before {
+  content: counter(linenumber);
+}
+
+.code-block:hover {
+  box-shadow: var(--theme-shadow-lg);
+  transition: box-shadow 0.2s ease-in-out;
 }
