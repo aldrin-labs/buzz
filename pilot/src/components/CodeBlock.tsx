@@ -50,13 +50,11 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
   }, [code, language])
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2ch' }}>
+    <div style={{ width: '100%', margin: '0 auto' }}>
       {title && (
-        <Text style={{
-          fontWeight: 500,
-          color: 'var(--theme-text)',
-          marginBottom: '1ch'
-        }}>{title}</Text>
+        <Text variant="h3" color="secondary" style={{ marginBottom: '1ch' }}>
+          {title}
+        </Text>
       )}
       <div style={{
         border: '1px solid var(--theme-border)',
@@ -64,8 +62,9 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         background: 'var(--vscode-background)',
         boxShadow: 'var(--theme-shadow)',
         borderRadius: '8px',
-        height: '100%',
-        transition: 'all 0.2s ease-in-out'
+        width: '100%',
+        maxWidth: '100%',
+        margin: '0 auto'
       }}>
         <pre
           ref={preRef}
@@ -73,7 +72,9 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
           style={{
             margin: 0,
             background: 'transparent',
-            padding: '2ch 2ch 2ch 5ch'
+            padding: '2ch',
+            width: '100%',
+            overflowX: 'auto'
           }}
           data-start="1"
         >
@@ -87,7 +88,9 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
               fontFamily: 'var(--font-family)',
               fontSize: 'var(--font-size)',
               lineHeight: 'var(--theme-line-height-base)',
-              color: 'var(--theme-text)'
+              color: 'var(--theme-text)',
+              display: 'block',
+              width: '100%'
             }}
           >
             {code}
