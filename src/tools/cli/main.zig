@@ -1,11 +1,13 @@
 const std = @import("std");
 const clap = @import("clap");
+const idl = @import("idl.zig");
 
 const Command = enum {
     init,
     deploy,
     test,
     build,
+    idl,
 };
 
 const Template = enum {
@@ -25,6 +27,7 @@ pub fn main() !void {
         \\-h, --help     Display this help and exit
         \\-v, --version  Display version and exit
         \\-t, --template <str>  Project template (agent/trading/yield/custom)
+        \\-n, --network <str>   Network to deploy to (default: devnet)
         \\<str>...
         \\
     );
@@ -68,6 +71,7 @@ pub fn main() !void {
         .deploy => try handleDeploy(allocator, res),
         .test => try handleTest(allocator, res),
         .build => try handleBuild(allocator, res),
+        .idl => try handleIDL(allocator, res),
     }
 }
 
@@ -81,11 +85,13 @@ fn printUsage() !void {
         \\  deploy [options]       Deploy project
         \\  test                   Run project tests
         \\  build                  Build project
+        \\  idl [project-path]     Generate IDL for project
         \\
         \\Options:
         \\  -h, --help            Display this help and exit
         \\  -v, --version         Display version and exit
         \\  -t, --template <str>  Project template (agent/trading/yield/custom)
+        \\  -n, --network <str>   Network to deploy to (default: devnet)
         \\
     );
 }
@@ -109,10 +115,22 @@ fn handleInit(allocator: std.mem.Allocator, res: clap.ParseResult) !void {
 }
 
 fn handleDeploy(allocator: std.mem.Allocator, res: clap.ParseResult) !void {
-    _ = allocator;
-    _ = res;
-    std.debug.print("Deploying project...\n", .{});
-    // TODO: Implement deployment logic
+    if (res.positionals.len < 2) {
+        std.debug.print("Error: Project path required\n", .{});
+        return error.MissingProjectPath;
+    }
+
+    const project_path = res.positionals[1];
+    const program_name = std.fs.path.basename(project_path);
+
+    const options = deploy.DeployOptions{
+        .project_path = project_path,
+        .program_name = program_name,
+        .network = res.args.network orelse "devnet",
+        .version = "0.1.0",
+    };
+
+    try deploy.execute(allocator, options);
 }
 
 fn handleTest(allocator: std.mem.Allocator, res: clap.ParseResult) !void {
@@ -127,4 +145,56 @@ fn handleBuild(allocator: std.mem.Allocator, res: clap.ParseResult) !void {
     _ = res;
     std.debug.print("Building project...\n", .{});
     // TODO: Implement build process
+}
+
+fn handleIDL(allocator: std.mem.Allocator, res: clap.ParseResult) !void {
+    if (res.positionals.len < 2) {
+        std.debug.print("Error: Project path required\n", .{});
+        return error.MissingProjectPath;
+    }
+
+    const project_path = res.positionals[1];
+
+    // Create example IDL (this will be replaced with actual program parsing)
+    const example_instruction = [_]idl.InstructionArg{
+        .{ .name = "amount", .type = "u64" },
+    };
+    const example_account = [_]idl.AccountField{
+        .{ .name = "owner", .type = "pubkey" },
+        .{ .name = "balance", .type = "u64" },
+    };
+    const example_error = [_]idl.ErrorDef{
+        .{ .code = 1, .name = "InsufficientBalance", .msg = "Insufficient balance for operation" },
+    };
+
+    const idl_content = try idl.generateIDL(
+        allocator,
+        "example_program",
+        "0.1.0",
+        &[_]idl.Instruction{.{
+            .name = "transfer",
+            .accounts = &[_]idl.AccountMeta{
+                .{ .name = "from", .isMut = true, .isSigner = true },
+                .{ .name = "to", .isMut = true, .isSigner = false },
+            },
+            .args = &example_instruction,
+        }},
+        &[_]idl.Account{.{
+            .name = "TokenAccount",
+            .fields = &example_account,
+        }},
+        &example_error,
+    );
+    defer allocator.free(idl_content);
+
+    // Create idl.json in project directory
+    const idl_path = try std.fs.path.join(allocator, &[_][]const u8{ project_path, "idl.json" });
+    defer allocator.free(idl_path);
+
+    const file = try std.fs.createFileAbsolute(idl_path, .{});
+    defer file.close();
+
+    try file.writeAll(idl_content);
+
+    std.debug.print("IDL generated at {s}\n", .{idl_path});
 }
