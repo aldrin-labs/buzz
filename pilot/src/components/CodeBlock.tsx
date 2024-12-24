@@ -28,14 +28,14 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       width: '100%',
       maxWidth: '100%',
       margin: '5rem auto',
-      padding: '3.5rem'
+      padding: '8rem'
     }}>
       {title && (
-        <Text variant="h3" color="secondary" style={{ marginBottom: '1.5rem' }}>
+        <Text variant="h3" color="secondary" style={{ marginBottom: '2rem' }}>
           {title}
         </Text>
       )}
-      <div style={{ overflow: 'auto' }}>
+      <div style={{ overflow: 'auto', margin: '-1rem' }}>
         <ReactPrism
           language={language}
           className="code-block line-numbers"
