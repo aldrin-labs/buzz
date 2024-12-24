@@ -1,0 +1,22 @@
+.code-block {
+  margin: 0;
+  background: transparent;
+  padding: 1.5rem;
+  width: 100%;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-family: var(--font-family-mono, monospace);
+}
+
+.code-block code {
+  white-space: pre;
+  tab-size: 2;
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: var(--theme-text);
+  display: block;
+  width: 100%;
+}
