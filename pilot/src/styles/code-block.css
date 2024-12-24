@@ -1,3 +1,9 @@
+.code-wrapper {
+  overflow: auto;
+  margin: 0;
+  width: 100%;
+}
+
 .code-block {
   width: 100%;
   overflow-x: auto;
@@ -6,10 +12,15 @@
   font-family: var(--font-family-mono, monospace);
   position: relative;
   margin: 5rem 0;
+  white-space: pre;
+  border: 1px solid var(--theme-border);
+  background: var(--vscode-background);
+  box-shadow: var(--theme-shadow);
+  border-radius: 8px;
 }
 
 .code-block code {
-  white-space: nowrap;
+  white-space: pre;
   tab-size: 2;
   font-family: inherit;
   font-size: inherit;
@@ -17,7 +28,8 @@
   color: var(--theme-text);
   display: block;
   width: 100%;
-  padding: 8rem;
+  padding: 3rem;
+  overflow-x: auto;
 }
 
 .w-prismjs {
