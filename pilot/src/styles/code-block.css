@@ -1,5 +1,5 @@
 .code-block {
-  margin: 0;
+  margin: 5rem;
   background: transparent !important;
   padding: 0 !important;
   width: 100%;
@@ -11,7 +11,7 @@
 }
 
 .code-block code {
-  white-space: pre;
+  white-space: nowrap;
   tab-size: 2;
   background: transparent;
   font-family: inherit;
