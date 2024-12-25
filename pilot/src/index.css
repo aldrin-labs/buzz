@@ -6,13 +6,13 @@
   :root {
     /* Color palette */
     --e2b-white: #ffffff;
-    --e2b-black: #0C0C0C;
-    --e2b-gray-50: #f7f7f7;
-    --e2b-gray-100: #ededed;
-    --e2b-gray-300: #d4d4d4;
-    --e2b-gray-700: #404040;
-    --e2b-gray-800: #1f1f1f;
-    --e2b-gray-900: #141414;
+    --e2b-black: #0A0A0A;
+    --e2b-gray-50: #fafafa;
+    --e2b-gray-100: #f4f4f5;
+    --e2b-gray-300: #d4d4d8;
+    --e2b-gray-700: #3f3f46;
+    --e2b-gray-800: #18181B;
+    --e2b-gray-900: #111111;
     --e2b-blue: #1D1FA5;
     --e2b-code-bg: #1E1E1E;
     --e2b-code-text: #D4D4D4;
@@ -41,6 +41,8 @@
     color: var(--theme-text);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
   }
 
   body {
@@ -60,6 +62,11 @@
 
   p {
     margin: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
   }
 
   button {

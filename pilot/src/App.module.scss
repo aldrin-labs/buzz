@@ -2,6 +2,8 @@
   min-height: 100vh;
   background: var(--e2b-black);
   color: var(--theme-text);
+  display: flex;
+  flex-direction: column;
 }
 
 .navContent {
@@ -44,6 +46,9 @@
   display: flex;
   padding-top: 60px;
   min-height: calc(100vh - 60px);
+  max-width: 90rem;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .sidebar {
@@ -51,10 +56,10 @@
   flex-shrink: 0;
   border-right: 1px solid var(--e2b-gray-800);
   height: calc(100vh - 60px);
-  position: fixed;
+  position: sticky;
   top: 60px;
-  left: 0;
   overflow-y: auto;
+  background: var(--e2b-black);
 }
 
 .sideNav {
@@ -111,13 +116,13 @@
 .mainContent {
   flex: 1;
   min-width: 0;
-  margin-left: 280px;
+  padding: 0 2rem;
 }
 
 .docArticle {
   max-width: 768px;
   margin: 0 auto;
-  padding: 3rem 2rem;
+  padding: 3rem 0;
 }
 
 .docHeader {
@@ -211,12 +216,13 @@
 
   .mainContent {
     margin-left: 0;
+    padding: 0 1.5rem;
   }
 }
 
 @media (max-width: 768px) {
   .docArticle {
-    padding: 2rem 1rem;
+    padding: 2rem 0;
   }
   
   .docHeader {
