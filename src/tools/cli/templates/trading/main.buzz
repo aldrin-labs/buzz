@@ -1,0 +1,115 @@
+import "solana" as sol;
+import "solana/agent" as agent;
+
+// Define trading strategy
+object {{strategy_name}} is agent\Strategy {
+    window: int = {{window_size}},
+    threshold: double = {{threshold}},
+    
+    fun decide(observation: agent\Observation) > agent\Decision {
+        const prices = observation.prices["{{trading_pair}}"];
+        const mean = agent\Behaviors.mean_reversion(prices, this.window);
+        const vol = agent\Behaviors.volatility(prices, this.window);
+        
+        const z_score = (prices[prices.len() - 1] - mean) / vol;
+        
+        if (z_score > this.threshold) {
+            return agent\Decision{
+                action = "sell",
+                params = {
+                    "amount": "{{trade_amount}}",
+                    "asset": "{{asset}}",
+                },
+                confidence = 1.0 - (1.0 / (1.0 + z_score)),
+            };
+        }
+        
+        if (z_score < -this.threshold) {
+            return agent\Decision{
+                action = "buy", 
+                params = {
+                    "amount": "{{trade_amount}}",
+                    "asset": "{{asset}}",
+                },
+                confidence = 1.0 - (1.0 / (1.0 + -z_score)),
+            };
+        }
+        
+        return agent\Decision{
+            action = "hold",
+            params = {<str: any>},
+            confidence = 0.5,
+        };
+    }
+}
+
+// Define reward function
+object PnLReward is agent\RewardFunction {
+    fun calculate(
+        prev_state: agent\AgentState,
+        action: agent\Decision,
+        new_state: agent\AgentState
+    ) > double {
+        return new_state.performance_metrics["portfolio_value"] - 
+               prev_state.performance_metrics["portfolio_value"];
+    }
+}
+
+// Define agent state
+object {{project_name}}State is agent\AgentState {
+    portfolio: {str: double},
+    strategy: {{strategy_name}},
+    reward_function: PnLReward,
+}
+
+// Define the agent program
+const program = sol\Program{
+    id = "{{program_id}}",
+    state = {{project_name}}State{
+        owner = "",
+        portfolio = {<str: double>},
+        strategy = {{strategy_name}}{},
+        reward_function = PnLReward{},
+        observations = [<agent\Observation>],
+        decisions = [<agent\Decision>],
+        performance_metrics = {<str: double>},
+    },
+};
+
+program.instruction(
+    "observe_and_act",
+    fun (ctx: sol\Context, data: sol\InstructionData) > void {
+        const state = {{project_name}}State{};
+        state.deserialize(ctx.accounts[0].data);
+        
+        const observation = agent\Observation{
+            timestamp = data.timestamp,
+            accounts = ctx.accounts,
+            prices = data.prices,
+            metrics = data.metrics,
+        };
+        
+        const decision = state.strategy.decide(observation);
+        
+        if (decision.action == "buy") {
+            // Execute buy order
+            {{buy_logic}}
+        } else if (decision.action == "sell") {
+            // Execute sell order
+            {{sell_logic}}
+        }
+        
+        state.observations.append(observation);
+        state.decisions.append(decision);
+        
+        const reward = state.reward_function.calculate(
+            prev_state: state,
+            action: decision,
+            new_state: state
+        );
+        
+        state.performance_metrics["cumulative_reward"] += reward;
+        
+        ctx.accounts[0].data = state.serialize();
+    }
+);

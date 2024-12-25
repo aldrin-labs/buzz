@@ -1,0 +1,15 @@
+.{
+    .name = "buzz",
+    .version = "0.5.0",
+    .dependencies = .{
+        .clap = .{
+            .url = "https://github.com/Hejsil/zig-clap/archive/refs/tags/0.5.0.tar.gz",
+            .hash = "122078778aea02366d80530d9672759a1635f221f700468f5c58427b81e8d15cf330",
+        },
+    },
+    .paths = .{
+        "src",
+        "build.zig",
+        "build.zig.zon",
+    },
+}

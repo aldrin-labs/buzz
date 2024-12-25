@@ -1,0 +1,15 @@
+import solana.decorators.{agent, entry, exit, size};
+import solana.defi.{MarketState, pool1, pool2};
+import solana.indicators.{ma, rsi};
+
+@agent
+object {{project_name}} {
+    strategy = {
+        entry: price < ma({{ma_period}}) and rsi < {{rsi_entry}},
+        exit: price > ma({{ma_period}}) or rsi > {{rsi_exit}},
+        size: min({{max_size}}, available_liquidity * {{liquidity_ratio}})
+    }
+
+    risk = {{risk_percentage}}%
+    pools = [{{pools}}]
+}
