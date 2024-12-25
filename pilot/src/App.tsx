@@ -1,10 +1,11 @@
 import { DefaultActionBar, Grid, Text, Container } from './components/sacred'
 import { CodeBlock } from "./components/CodeBlock"
 import { securityExample, cpiExample, agentExample, syntaxExample } from "./lib/code-examples"
-import { Link } from 'react-router-dom'
+import { Link, Routes, Route } from 'react-router-dom'
 import styles from './App.module.scss'
+import CreateDao from './pages/CreateDao'
 
-const App: React.FC = () => {
+const Home: React.FC = () => {
   return (
     <div className={styles.docLayout}>
       <nav className={styles.navContent}>
@@ -94,6 +95,15 @@ const App: React.FC = () => {
         </main>
       </div>
     </div>
+  )
+}
+
+const App: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/create-dao" element={<CreateDao />} />
+    </Routes>
   )
 }
 
