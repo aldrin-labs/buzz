@@ -4,75 +4,118 @@
 
 @layer base {
   :root {
-    /* Color system from modal.com */
-    --color-gray-50: #f9fafb;
-    --color-gray-100: #f3f4f6;
-    --color-gray-200: #e5e7eb;
-    --color-gray-300: #d1d5db;
-    --color-gray-400: #9ca3af;
-    --color-gray-500: #6b7280;
-    --color-gray-600: #4b5563;
-    --color-gray-700: #374151;
-    --color-gray-800: #1f2937;
-    --color-gray-900: #111827;
-
+    /* Color palette */
+    --e2b-white: #ffffff;
+    --e2b-black: #0C0C0C;
+    --e2b-gray-50: #f7f7f7;
+    --e2b-gray-100: #ededed;
+    --e2b-gray-300: #d4d4d4;
+    --e2b-gray-700: #404040;
+    --e2b-gray-800: #1f1f1f;
+    --e2b-gray-900: #141414;
+    --e2b-blue: #1D1FA5;
+    --e2b-code-bg: #1E1E1E;
+    --e2b-code-text: #D4D4D4;
+    
     /* Theme variables */
-    --theme-background: var(--color-gray-50);
-    --theme-surface: var(--color-gray-100);
-    --theme-text: var(--color-gray-900);
-    --theme-text-secondary: var(--color-gray-600);
-    --theme-text-tertiary: var(--color-gray-500);
-    --theme-headline: var(--color-gray-800);
-    --theme-headline-secondary: var(--color-gray-600);
-    --theme-border: var(--color-gray-200);
-    --theme-code-bg: var(--color-gray-50);
-
-    /* Gradients */
-    --gradient-subtle: linear-gradient(to bottom right, var(--color-gray-50), var(--color-gray-100));
-    --gradient-emphasis: linear-gradient(to bottom right, var(--color-gray-100), var(--color-gray-200));
-    --gradient-surface: linear-gradient(180deg, var(--color-gray-50) 0%, var(--color-gray-100) 100%);
-    --gradient-card: linear-gradient(145deg, #ffffff 0%, var(--color-gray-50) 100%);
-
+    --theme-background: var(--e2b-black);
+    --theme-surface: var(--e2b-gray-900);
+    --theme-text: var(--e2b-white);
+    --theme-text-secondary: rgba(255, 255, 255, 0.7);
+    --theme-text-tertiary: rgba(255, 255, 255, 0.5);
+    --theme-header-bg: var(--e2b-blue);
+    --theme-code-bg: var(--e2b-code-bg);
+    --theme-code-text: var(--e2b-code-text);
+    
     /* Font settings */
-    --font-family: var(--font-mono, ui-monospace, 'Geist-Mono-Regular', monospace);
+    --font-family: ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
+      'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
+      'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
     --font-size: 14px;
     --line-height-base: 1.6;
+  }
 
-    /* Grid */
-    --grid-color: rgba(0, 0, 0, 0.03);
+  html {
+    font-family: var(--font-family);
+    background: var(--theme-background);
+    color: var(--theme-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    background: var(--theme-background);
-    color: var(--theme-text);
-    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
     font-size: var(--font-size);
     line-height: var(--line-height-base);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    color: var(--theme-headline);
+    margin: 0;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--theme-text);
+  }
+
+  p {
+    margin: 0;
   }
 
   button {
-    @apply bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-md shadow-sm
-           hover:from-gray-50 hover:to-gray-100 active:from-gray-100 active:to-gray-200
-           transition-all duration-200;
+    @apply transition-all duration-200;
+    background: transparent;
+    color: var(--theme-text);
     font-family: var(--font-family);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--e2b-gray-800);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--e2b-gray-900);
+      border-color: var(--e2b-gray-700);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
   }
 
   input, textarea {
-    @apply bg-gradient-to-b from-white to-gray-50 border border-gray-200 rounded-md
-           focus:ring-2 focus:ring-blue-500/20 transition-all duration-200;
+    @apply transition-all duration-200;
+    background: var(--e2b-gray-900);
+    border: 1px solid var(--e2b-gray-800);
+    color: var(--theme-text);
     font-family: var(--font-family);
+    padding: 0.5rem;
+
+    &:focus {
+      border-color: var(--e2b-gray-700);
+      outline: none;
+    }
+  }
+
+  ::selection {
+    background: var(--e2b-gray-800);
+    color: var(--theme-text);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--e2b-gray-800);
+    
+    &:hover {
+      background: var(--e2b-gray-700);
+    }
   }
 }
-
-.grid-background {
-  background-size: 8px 8px;
-  background-image:
-    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px),
-    var(--gradient-surface);
-}
-
