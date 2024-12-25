@@ -1,78 +1,112 @@
 :root {
-  --vscode-white: var(--theme-background);
-  --vscode-black: var(--theme-text);
-  --vscode-gray: var(--theme-text-secondary);
-  --vscode-border: var(--theme-border);
-  --vscode-keyword: #0550ae;
-  --vscode-type: #0a7b83;
-  --vscode-string: #0a7b83;
-  --vscode-comment: #64748b;
-  --vscode-variable: #953800;
-  --vscode-function: #8250df;
-  --vscode-decorator: #0550ae;
-  --vscode-background: var(--theme-gradient-code);
-  --vscode-line-number: #94a3b8;
-  --vscode-line-highlight: rgba(0, 0, 0, 0.02);
+  --code-text: #D4D4D4;
+  --code-text-alpha-50: rgba(212, 212, 212, 0.5);
+  --code-text-alpha-70: rgba(212, 212, 212, 0.7);
+  --code-text-alpha-85: rgba(212, 212, 212, 0.85);
+  --code-text-alpha-15: rgba(212, 212, 212, 0.15);
 }
 
 pre[class*="language-"],
 code[class*="language-"] {
-  color: var(--vscode-black);
+  color: var(--code-text);
   font-family: var(--font-family);
   direction: ltr;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
   word-break: normal;
-  line-height: 1.6;
-  tab-size: 4;
+  line-height: 1.5;
+  font-size: 12px;
+  tab-size: 2;
   hyphens: none;
-  background: var(--vscode-background) !important;
+  background: transparent !important;
   text-shadow: none !important;
-  padding: 3ch;
   margin: 0;
-  border-radius: 8px;
-}
-
-.line-numbers .line-numbers-rows {
-  position: absolute;
-  pointer-events: none;
-  top: 2ch;
-  font-size: 100%;
-  left: 0;
-  width: 3.5ch;
-  letter-spacing: -1px;
-  border-right: 1px solid var(--vscode-border);
-  user-select: none;
   padding: 0;
-  background: var(--vscode-background);
 }
 
-.line-numbers-rows > span {
-  display: block;
-  counter-increment: linenumber;
-  color: var(--vscode-line-number) !important;
+/* Rust syntax highlighting */
+.language-rust {
+  .token.keyword,
+  .token.decorator { 
+    color: var(--code-text) !important;
+    font-weight: 500;
+    background: var(--code-text-alpha-15);
+    padding: 0.15em 0.4em;
+    margin: 0 -0.2em;
+  }
+
+  .token.function { 
+    color: var(--code-text) !important;
+    font-weight: 500;
+  }
+
+  .token.class-name,
+  .token.builtin { 
+    color: var(--code-text) !important;
+    font-weight: 500;
+  }
+
+  .token.string,
+  .token.number { 
+    color: var(--code-text-alpha-85) !important;
+  }
+
+  .token.comment { 
+    color: var(--code-text-alpha-50) !important;
+    font-style: italic;
+  }
+
+  .token.operator,
+  .token.punctuation { 
+    color: var(--code-text-alpha-70) !important;
+  }
 }
 
-.line-numbers-rows > span:before {
-  content: counter(linenumber);
-  display: block;
-  padding-right: 0.8ch;
-  text-align: right;
+/* Buzz syntax highlighting */
+.language-buzz,
+.language-python {
+  .token.keyword,
+  .token.decorator { 
+    color: var(--code-text) !important;
+    font-weight: 500;
+    background: var(--code-text-alpha-15);
+    padding: 0.15em 0.4em;
+    margin: 0 -0.2em;
+  }
+
+  .token.function { 
+    color: var(--code-text) !important;
+    font-weight: 500;
+  }
+
+  .token.class-name,
+  .token.builtin { 
+    color: var(--code-text) !important;
+    font-weight: 500;
+  }
+
+  .token.string,
+  .token.number { 
+    color: var(--code-text-alpha-85) !important;
+  }
+
+  .token.comment { 
+    color: var(--code-text-alpha-50) !important;
+    font-style: italic;
+  }
+
+  .token.operator,
+  .token.punctuation { 
+    color: var(--code-text-alpha-70) !important;
+  }
 }
 
-.token.comment { color: var(--vscode-comment) !important; }
-.token.decorator { color: var(--vscode-decorator) !important; }
-.token.keyword { color: var(--vscode-keyword) !important; }
-.token.string { color: var(--vscode-string) !important; }
-.token.function { color: var(--vscode-function) !important; }
-.token.class-name { color: var(--vscode-type) !important; }
-.token.builtin { color: var(--vscode-keyword) !important; }
-.token.number { color: var(--vscode-variable) !important; }
-.token.operator { color: var(--vscode-black) !important; }
-.token.punctuation { color: var(--vscode-gray) !important; }
-
-.token.decorator {
-  display: block;
-  margin-bottom: 0.5ch;
+/* Selection styling */
+code[class*="language-"]::selection,
+code[class*="language-"] ::selection,
+pre[class*="language-"]::selection,
+pre[class*="language-"] ::selection {
+  background: var(--code-text-alpha-15);
+  color: var(--code-text);
 }

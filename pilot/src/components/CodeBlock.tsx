@@ -1,16 +1,27 @@
 import React from 'react'
-import { Text, Container } from './sacred'
-import ReactPrism from '@uiw/react-prismjs'
-import 'prismjs/plugins/line-numbers/prism-line-numbers'
-import 'prismjs/plugins/line-numbers/prism-line-numbers.css'
+import styles from '../styles/examples.module.scss'
+import Prism from 'prismjs'
+import 'prismjs/components/prism-rust'
+import 'prismjs/components/prism-python'
 import '../styles/vs-code-theme.css'
-import '../lib/prism-buzz'
-import '../styles/code-block.css'
+
+interface Benchmark {
+  metric: string;
+  rust: string;
+  buzz: string;
+  diff: string;
+}
+
+interface CodeExample {
+  rust: string;
+  buzz: string;
+  benchmarks: Benchmark[];
+}
 
 interface CodeBlockProps {
-  title?: string
-  code: string
-  language?: string
+  title?: string;
+  code: CodeExample;
+  language?: string;
 }
 
 export const CodeBlock: React.FC<CodeBlockProps> = ({
@@ -18,31 +29,53 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
   code,
   language = "buzz"
 }) => {
+  React.useEffect(() => {
+    Prism.highlightAll()
+  }, [code])
+
   return (
-    <Container style={{
-      border: '1px solid var(--theme-border)',
-      overflow: 'hidden',
-      background: 'var(--vscode-background)',
-      boxShadow: 'var(--theme-shadow)',
-      borderRadius: '8px',
-      width: '100%',
-      maxWidth: '100%',
-      margin: '5rem auto',
-      padding: '8rem'
-    }}>
+    <div className={styles.container}>
       {title && (
-        <Text variant="h3" color="secondary" style={{ marginBottom: '2rem' }}>
-          {title}
-        </Text>
+        <h3 className={styles.h3}><span>{title}</span></h3>
       )}
-      <div style={{ overflow: 'auto', margin: '-1rem' }}>
-        <ReactPrism
-          language={language}
-          className="code-block line-numbers"
-          source={code}
-          prefixCls="w-prismjs"
-        />
+      <div className={styles.columns}>
+        <div className={styles.column}>
+          <div className={styles.box}>
+            <div className={styles.label}>RUST</div>
+            <pre className={styles.pre}>
+              <code className="language-rust">{code.rust}</code>
+            </pre>
+          </div>
+        </div>
+        <div className={styles.column}>
+          <div className={styles.box}>
+            <div className={styles.label}>BUZZ</div>
+            <pre className={styles.pre}>
+              <code className="language-python">{code.buzz}</code>
+            </pre>
+          </div>
+        </div>
       </div>
-    </Container>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th>METRIC</th>
+            <th>RUST</th>
+            <th>BUZZ</th>
+            <th>DIFF</th>
+          </tr>
+        </thead>
+        <tbody>
+          {code.benchmarks.map((benchmark, index) => (
+            <tr key={index}>
+              <td>{benchmark.metric}</td>
+              <td>{benchmark.rust}</td>
+              <td>{benchmark.buzz}</td>
+              <td>{benchmark.diff}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }

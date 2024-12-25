@@ -1,89 +1,88 @@
 import React from 'react'
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { CodeBlock } from "@/components/CodeBlock"
-import { Link } from 'react-router-dom'
-import { RocketIcon } from 'lucide-react'
+import { CodeBlock } from '../components/CodeBlock'
+import styles from '../App.module.scss'
 
-const daoExample = `@dao_contract
-contract MemeDAO:
-    token: TokenAccount  # SPL or SPL22 token
-    agents: List[Agent]
+const daoExample = {
+  rust: `#[program]
+mod dao {
+  use anchor_lang::prelude::*;
+  
+  #[account]
+  pub struct Dao {
+    pub authority: Pubkey,
+    pub members: Vec<Pubkey>,
+    pub proposal_count: u64,
+  }
 
-    @quadratic_voting
-    def create_agent(
-        code: str,
-        description: str
-    ):
-        # Verify token staking
-        assert self.token.staked_amount > 0
+  pub fn create_dao(ctx: Context<CreateDao>) -> Result<()> {
+    let dao = &mut ctx.accounts.dao;
+    dao.authority = ctx.accounts.authority.key();
+    dao.members = vec![ctx.accounts.authority.key()];
+    dao.proposal_count = 0;
+    Ok(())
+  }
+}`,
+  buzz: `@program_id("DAO1...")
+contract Dao:
+  authority: PublicKey
+  members: List[PublicKey]
+  proposal_count: u64
 
-        # Deploy new AI agent
-        agent = self.compile_and_deploy(code)
-        self.agents.push(agent)`
+  def create_dao():
+    self.authority = ctx.accounts.authority
+    self.members = [ctx.accounts.authority]
+    self.proposal_count = 0`,
+  benchmarks: [
+    { metric: "Lines", rust: "      26", buzz: "       9", diff: "  -65%" },
+    { metric: "Size (KB)", rust: "    4.2", buzz: "    1.8", diff: "  -57%" },
+    { metric: "CU", rust: "   12000", buzz: "   11000", diff: "   -8%" },
+    { metric: "Dev Time (h)", rust: "     45", buzz: "     15", diff: "  -67%" },
+    { metric: "TTM Coef.", rust: "   13.5", buzz: "    1.5", diff: "  -89%" }
+  ]
+}
 
 const CreateDao: React.FC = () => {
   return (
-    <div className="min-h-screen bg-black text-white font-['Geist-Mono-Regular']">
-      <nav className="px-8 py-6 flex justify-between items-center border-b border-[#404040]">
-        <Link to="/" className="flex items-center space-x-4">
-          <RocketIcon size={24} className="text-white" />
-          <span className="text-lg">Buzz</span>
-        </Link>
-        <Button className="bg-black hover:bg-[#1a1a1a] border border-[#404040] rounded-none px-6">
-          Select Wallet
-        </Button>
+    <div className={styles.docLayout}>
+      <nav className={styles.navContent}>
+        <div className={styles.logo}><span>BUZZ LANG</span></div>
       </nav>
 
-      <main className="px-8 py-16 max-w-4xl mx-auto">
-        <div className="mb-16">
-          <h1 className="text-4xl mb-4">Create Your AI DAO</h1>
-          <p className="text-lg text-gray-300">
-            Launch a memecoin-powered DAO with autonomous AI agents. Build, govern, and deploy on-chain programs together.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-          <Card className="p-6 bg-black border-[#404040] rounded-none">
-            <h3 className="text-xl mb-2">Token Integration</h3>
-            <p className="text-gray-300">Support for SPL and SPL22 tokens with secure staking verification.</p>
-          </Card>
-          <Card className="p-6 bg-black border-[#404040] rounded-none">
-            <h3 className="text-xl mb-2">Quadratic Voting</h3>
-            <p className="text-gray-300">Fair and efficient decision-making for your DAO's governance.</p>
-          </Card>
-        </div>
-
-        <Card className="p-8 bg-black border-[#404040] rounded-none">
-          <div className="mb-8">
-            <CodeBlock code={daoExample} />
-          </div>
-
-          <form className="space-y-8">
-            <div>
-              <label className="block mb-2">Token Address (SPL/SPL22)</label>
-              <input
-                type="text"
-                className="w-full p-3 bg-black border border-[#404040] rounded-none"
-                placeholder="Enter token address..."
-              />
+      <div className={styles.docContainer}>
+        <aside className={styles.sidebar}>
+          <nav className={styles.sideNav}>
+            <div className={styles.sideNavSection}>
+              <h3 className={styles.sideNavTitle}>DAO Creation</h3>
+              <ul>
+                <li><a href="#overview" className={styles.active}>Overview</a></li>
+                <li><a href="#code">Code Example</a></li>
+                <li><a href="#deploy">Deployment</a></li>
+              </ul>
             </div>
+          </nav>
+        </aside>
 
-            <div>
-              <label className="block mb-2">DAO Name</label>
-              <input
-                type="text"
-                className="w-full p-3 bg-black border border-[#404040] rounded-none"
-                placeholder="Enter DAO name..."
-              />
-            </div>
+        <main className={styles.mainContent}>
+          <article className={styles.docArticle}>
+            <header className={styles.docHeader}>
+              <h1 className={styles.heroTitle}>
+                <span>Create a DAO in Minutes</span>
+              </h1>
+              <p className={styles.heroSubtitle}>
+                <span>Build and deploy your own DAO on Solana using Buzz's simple syntax and built-in security features.</span>
+              </p>
+            </header>
 
-            <Button className="w-full bg-black hover:bg-[#1a1a1a] border border-[#404040] rounded-none py-6">
-              Connect Wallet to Continue
-            </Button>
-          </form>
-        </Card>
-      </main>
+            <section id="code" className={styles.docSection}>
+              <h2 className={styles.sectionTitle}><span>Code Example</span></h2>
+              <p className={styles.sectionText}>
+                Create a basic DAO with member management and proposal functionality.
+              </p>
+              <CodeBlock code={daoExample} />
+            </section>
+          </article>
+        </main>
+      </div>
     </div>
   )
 }
