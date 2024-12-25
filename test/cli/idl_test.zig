@@ -1,8 +1,9 @@
 const std = @import("std");
 const testing = std.testing;
-const idl = @import("../../src/tools/cli/idl.zig");
-const solana = @import("../../src/tools/cli/solana.zig");
-const deploy = @import("../../src/tools/cli/commands/deploy.zig");
+const json = std.json;
+const idl = @import("tools").cli.idl;
+const solana = @import("tools").cli.solana;
+const deploy = @import("tools").cli.commands.deploy;
 
 test "IDL instruction parsing" {
     const allocator = testing.allocator;
@@ -28,13 +29,16 @@ test "IDL instruction parsing" {
     try testing.expectEqual(@as(usize, 1), parsed.args.len);
 }
 
-test "IDL generation basic test" {
+test "IDL generation includes program name and version" {
     const allocator = testing.allocator;
+    
+    const program_name = "test_program";
+    const version = "0.1.0";
     
     const generated = try idl.generateIDL(
         allocator,
-        "test_program",
-        "0.1.0",
+        program_name,
+        version,
         &[_]idl.Instruction{.{
             .name = "initialize",
             .accounts = &[_]idl.AccountMeta{
@@ -58,11 +62,22 @@ test "IDL generation basic test" {
     defer allocator.free(generated);
 
     // Parse generated IDL to verify contents
-    const parsed = try std.json.parseFromSlice(std.json.Value, allocator, generated, .{});
+    const parsed = try json.parseFromSlice(json.Value, allocator, generated, .{});
     defer parsed.deinit();
 
-    try testing.expectEqualStrings("test_program", parsed.value.object.get("name").?.string);
-    try testing.expectEqualStrings("0.1.0", parsed.value.object.get("version").?.string);
+    // Verify program name and version
+    try testing.expectEqualStrings(program_name, parsed.value.object.get("name").?.string);
+    try testing.expectEqualStrings(version, parsed.value.object.get("version").?.string);
+    
+    // Verify required IDL fields exist
+    try testing.expect(parsed.value.object.get("instructions") != null);
+    try testing.expect(parsed.value.object.get("accounts") != null);
+    try testing.expect(parsed.value.object.get("errors") != null);
+    
+    // Verify instruction structure
+    const instructions = parsed.value.object.get("instructions").?.array;
+    try testing.expectEqual(@as(usize, 1), instructions.items.len);
+    try testing.expectEqualStrings("initialize", instructions.items[0].object.get("name").?.string);
 }
 
 test "Solana client deployment error handling" {

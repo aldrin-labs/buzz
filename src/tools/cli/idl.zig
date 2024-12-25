@@ -220,3 +220,79 @@ pub fn createError(
         .msg = msg,
     };
 }
+
+pub const ParsedInstruction = struct {
+    name: []const u8,
+    accounts: []AccountMeta,
+    args: []InstructionArg,
+    allocator: std.mem.Allocator,
+
+    pub fn deinit(self: *ParsedInstruction) void {
+        for (self.accounts) |acc| {
+            self.allocator.free(acc.name);
+        }
+        for (self.args) |arg| {
+            self.allocator.free(arg.name);
+            self.allocator.free(arg.type);
+        }
+        self.allocator.free(self.name);
+        self.allocator.free(self.accounts);
+        self.allocator.free(self.args);
+    }
+};
+
+pub fn parseInstruction(allocator: std.mem.Allocator, instruction_json: []const u8) !ParsedInstruction {
+    var parsed = try std.json.parseFromSlice(std.json.Value, allocator, instruction_json, .{});
+    defer parsed.deinit();
+
+    const root = parsed.value.object;
+    
+    // Parse name
+    const name = try allocator.dupe(u8, root.get("name").?.string);
+    errdefer allocator.free(name);
+
+    // Parse accounts
+    const accounts_array = root.get("accounts").?.array;
+    var accounts = try allocator.alloc(AccountMeta, accounts_array.items.len);
+    errdefer {
+        for (accounts) |acc| {
+            allocator.free(acc.name);
+        }
+        allocator.free(accounts);
+    }
+
+    for (accounts_array.items, 0..) |acc, i| {
+        const acc_obj = acc.object;
+        accounts[i] = .{
+            .name = try allocator.dupe(u8, acc_obj.get("name").?.string),
+            .isMut = acc_obj.get("isMut").?.bool,
+            .isSigner = acc_obj.get("isSigner").?.bool,
+        };
+    }
+
+    // Parse args
+    const args_array = root.get("args").?.array;
+    var args = try allocator.alloc(InstructionArg, args_array.items.len);
+    errdefer {
+        for (args) |arg| {
+            allocator.free(arg.name);
+            allocator.free(arg.type);
+        }
+        allocator.free(args);
+    }
+
+    for (args_array.items, 0..) |arg, i| {
+        const arg_obj = arg.object;
+        args[i] = .{
+            .name = try allocator.dupe(u8, arg_obj.get("name").?.string),
+            .type = try allocator.dupe(u8, arg_obj.get("type").?.string),
+        };
+    }
+
+    return ParsedInstruction{
+        .name = name,
+        .accounts = accounts,
+        .args = args,
+        .allocator = allocator,
+    };
+}

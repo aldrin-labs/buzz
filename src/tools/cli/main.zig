@@ -1,13 +1,19 @@
 const std = @import("std");
-const clap = @import("clap");
-const idl = @import("idl.zig");
+
+pub const cli = struct {
+    pub const idl = @import("idl.zig");
+    pub const solana = @import("solana.zig");
+    pub const commands = struct {
+        pub const deploy = @import("commands/deploy.zig");
+    };
+};
 
 const Command = enum {
     init,
     deploy,
-    test,
+    run_test, // renamed from 'test' to avoid conflict with Zig keyword
     build,
-    idl,
+    idl
 };
 
 const Template = enum {
@@ -17,62 +23,88 @@ const Template = enum {
     custom,
 };
 
+const Args = struct {
+    command: ?Command = null,
+    help: bool = false,
+    version: bool = false,
+    template: ?[]const u8 = null,
+    network: ?[]const u8 = null,
+    positionals: std.ArrayList([]const u8),
+
+    pub fn deinit(self: *Args) void {
+        self.positionals.deinit();
+    }
+};
+
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     const allocator = gpa.allocator();
     defer _ = gpa.deinit();
 
-    // Define command line parameters
-    const params = comptime clap.parseParamsComptime(
-        \\-h, --help     Display this help and exit
-        \\-v, --version  Display version and exit
-        \\-t, --template <str>  Project template (agent/trading/yield/custom)
-        \\-n, --network <str>   Network to deploy to (default: devnet)
-        \\<str>...
-        \\
-    );
-
-    var diag = clap.Diagnostic{};
-    var res = clap.parse(clap.Help, &params, clap.parsers.default, .{
-        .diagnostic = &diag,
-        .allocator = allocator,
-    }) catch |err| {
-        diag.report(std.io.getStdErr().writer(), err) catch {};
-        return err;
-    };
-    defer res.deinit();
+    var args = try parseArgs(allocator);
+    defer args.deinit();
 
     // Handle help and version flags
-    if (res.args.help == 1) {
+    if (args.help) {
         try printUsage();
         return;
     }
 
-    if (res.args.version == 1) {
+    if (args.version) {
         try std.io.getStdOut().writer().print("buzz-cli version 0.1.0\n", .{});
         return;
     }
 
     // Parse command and arguments
-    if (res.positionals.len == 0) {
+    if (args.positionals.items.len == 0) {
         try printUsage();
         return;
     }
 
-    const cmd_str = res.positionals[0];
-    const cmd = std.meta.stringToEnum(Command, cmd_str) orelse {
-        std.debug.print("Unknown command: {s}\n", .{cmd_str});
+    const cmd = args.command orelse {
+        std.debug.print("Unknown command: {s}\n", .{args.positionals.items[0]});
         return error.InvalidCommand;
     };
 
     // Execute command
     switch (cmd) {
-        .init => try handleInit(allocator, res),
-        .deploy => try handleDeploy(allocator, res),
-        .test => try handleTest(allocator, res),
-        .build => try handleBuild(allocator, res),
-        .idl => try handleIDL(allocator, res),
+        .init => try handleInit(allocator, &args),
+        .deploy => try handleDeploy(allocator, &args),
+        .run_test => try handleTest(allocator, &args),
+        .build => try handleBuild(allocator, &args),
+        .idl => try handleIDL(allocator, &args),
     }
+}
+
+fn parseArgs(allocator: std.mem.Allocator) !Args {
+    var args_iter = try std.process.argsWithAllocator(allocator);
+    defer args_iter.deinit();
+
+    // Skip executable name
+    _ = args_iter.skip();
+
+    var args = Args{
+        .positionals = std.ArrayList([]const u8).init(allocator),
+    };
+
+    while (args_iter.next()) |arg| {
+        if (std.mem.eql(u8, arg, "-h") or std.mem.eql(u8, arg, "--help")) {
+            args.help = true;
+        } else if (std.mem.eql(u8, arg, "-v") or std.mem.eql(u8, arg, "--version")) {
+            args.version = true;
+        } else if (std.mem.eql(u8, arg, "-t") or std.mem.eql(u8, arg, "--template")) {
+            args.template = args_iter.next() orelse return error.MissingTemplateValue;
+        } else if (std.mem.eql(u8, arg, "-n") or std.mem.eql(u8, arg, "--network")) {
+            args.network = args_iter.next() orelse return error.MissingNetworkValue;
+        } else {
+            try args.positionals.append(arg);
+            if (args.command == null) {
+                args.command = std.meta.stringToEnum(Command, arg);
+            }
+        }
+    }
+
+    return args;
 }
 
 fn printUsage() !void {
@@ -83,7 +115,7 @@ fn printUsage() !void {
         \\Commands:
         \\  init [project-name]    Generate new project
         \\  deploy [options]       Deploy project
-        \\  test                   Run project tests
+        \\  run_test               Run project tests
         \\  build                  Build project
         \\  idl [project-path]     Generate IDL for project
         \\
@@ -96,15 +128,15 @@ fn printUsage() !void {
     );
 }
 
-fn handleInit(allocator: std.mem.Allocator, res: clap.ParseResult) !void {
+fn handleInit(allocator: std.mem.Allocator, args: *const Args) !void {
     _ = allocator;
-    if (res.positionals.len < 2) {
+    if (args.positionals.items.len < 2) {
         std.debug.print("Error: Project name required\n", .{});
         return error.MissingProjectName;
     }
 
-    const project_name = res.positionals[1];
-    const template_str = res.args.template orelse "agent";
+    const project_name = args.positionals.items[1];
+    const template_str = args.template orelse "agent";
     const template = std.meta.stringToEnum(Template, template_str) orelse {
         std.debug.print("Invalid template: {s}\n", .{template_str});
         return error.InvalidTemplate;
@@ -114,72 +146,73 @@ fn handleInit(allocator: std.mem.Allocator, res: clap.ParseResult) !void {
     // TODO: Implement project creation using templates
 }
 
-fn handleDeploy(allocator: std.mem.Allocator, res: clap.ParseResult) !void {
-    if (res.positionals.len < 2) {
+fn handleDeploy(allocator: std.mem.Allocator, args: *const Args) !void {
+    if (args.positionals.items.len < 2) {
         std.debug.print("Error: Project path required\n", .{});
         return error.MissingProjectPath;
     }
 
-    const project_path = res.positionals[1];
+    const project_path = args.positionals.items[1];
     const program_name = std.fs.path.basename(project_path);
 
-    const options = deploy.DeployOptions{
+    const options = cli.commands.deploy.DeployOptions{
         .project_path = project_path,
         .program_name = program_name,
-        .network = res.args.network orelse "devnet",
+        .network = args.network orelse "devnet",
         .version = "0.1.0",
     };
 
-    try deploy.execute(allocator, options);
+    try cli.commands.deploy.execute(allocator, options);
 }
 
-fn handleTest(allocator: std.mem.Allocator, res: clap.ParseResult) !void {
+fn handleTest(allocator: std.mem.Allocator, args: *const Args) !void {
     _ = allocator;
-    _ = res;
+    _ = args;
     std.debug.print("Running tests...\n", .{});
     // TODO: Implement test running
 }
 
-fn handleBuild(allocator: std.mem.Allocator, res: clap.ParseResult) !void {
+fn handleBuild(allocator: std.mem.Allocator, args: *const Args) !void {
     _ = allocator;
-    _ = res;
+    _ = args;
     std.debug.print("Building project...\n", .{});
     // TODO: Implement build process
 }
 
-fn handleIDL(allocator: std.mem.Allocator, res: clap.ParseResult) !void {
-    if (res.positionals.len < 2) {
+fn handleIDL(allocator: std.mem.Allocator, args: *const Args) !void {
+    if (args.positionals.items.len < 2) {
         std.debug.print("Error: Project path required\n", .{});
         return error.MissingProjectPath;
     }
 
-    const project_path = res.positionals[1];
+    const project_path = args.positionals.items[1];
 
     // Create example IDL (this will be replaced with actual program parsing)
-    const example_instruction = [_]idl.InstructionArg{
+    const example_instruction = [_]cli.idl.InstructionArg{
         .{ .name = "amount", .type = "u64" },
     };
-    const example_account = [_]idl.AccountField{
+    const example_account = [_]cli.idl.AccountField{
         .{ .name = "owner", .type = "pubkey" },
         .{ .name = "balance", .type = "u64" },
     };
-    const example_error = [_]idl.ErrorDef{
+    const example_error = [_]cli.idl.ErrorDef{
         .{ .code = 1, .name = "InsufficientBalance", .msg = "Insufficient balance for operation" },
     };
 
-    const idl_content = try idl.generateIDL(
+    const program_name = std.fs.path.basename(project_path);
+    const idl_content = try cli.idl.generateIDL(
         allocator,
-        "example_program",
+        program_name,
         "0.1.0",
-        &[_]idl.Instruction{.{
+        &[_]cli.idl.Instruction{.{
             .name = "transfer",
-            .accounts = &[_]idl.AccountMeta{
+            .accounts = &[_]cli.idl.AccountMeta{
                 .{ .name = "from", .isMut = true, .isSigner = true },
                 .{ .name = "to", .isMut = true, .isSigner = false },
             },
             .args = &example_instruction,
         }},
-        &[_]idl.Account{.{
+        &[_]cli.idl.Account{.{
             .name = "TokenAccount",
             .fields = &example_account,
         }},

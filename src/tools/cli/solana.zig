@@ -45,7 +45,7 @@ pub const SolanaClient = struct {
         );
         defer self.allocator.free(config_args);
 
-        var config_child = std.ChildProcess.init(&.{ "sh", "-c", config_args }, self.allocator);
+        var config_child = std.process.Child.init(&.{ "sh", "-c", config_args }, self.allocator);
         _ = try config_child.spawnAndWait();
 
         // Deploy program using Solana CLI
@@ -56,7 +56,7 @@ pub const SolanaClient = struct {
         );
         defer self.allocator.free(deploy_args);
 
-        var deploy_child = std.ChildProcess.init(&.{ "sh", "-c", deploy_args }, self.allocator);
+        var deploy_child = std.process.Child.init(&.{ "sh", "-c", deploy_args }, self.allocator);
         const deploy_result = try deploy_child.spawnAndWait();
 
         if (deploy_result.Exited != 0) {
@@ -74,7 +74,7 @@ pub const SolanaClient = struct {
         );
         defer self.allocator.free(verify_args);
 
-        var verify_child = std.ChildProcess.init(&.{ "sh", "-c", verify_args }, self.allocator);
+        var verify_child = std.process.Child.init(&.{ "sh", "-c", verify_args }, self.allocator);
         const verify_result = try verify_child.spawnAndWait();
 
         if (verify_result.Exited != 0) {

@@ -2,6 +2,44 @@ const std = @import("std");
 const idl = @import("../idl.zig");
 const solana = @import("../solana.zig");
 
+pub const TemplateVars = struct {
+    project_name: []const u8,
+    description: []const u8,
+    strategy_name: []const u8,
+    version: []const u8,
+};
+
+pub fn generateFromTemplate(
+    allocator: std.mem.Allocator,
+    template_name: []const u8,
+    vars: TemplateVars,
+) ![]const u8 {
+    // For now, return a simple template with the variables filled in
+    const template =
+        \\// {s} - {s}
+        \\// Version: {s}
+        \\
+        \\use strategy {s};
+        \\
+        \\pub fn main() void {{
+        \\    // Generated from {s} template
+        \\}}
+        \\
+    ;
+
+    return try std.fmt.allocPrint(
+        allocator,
+        template,
+        .{
+            vars.project_name,
+            vars.description,
+            vars.version,
+            vars.strategy_name,
+            template_name,
+        },
+    );
+}
+
 pub const DeployOptions = struct {
     network: []const u8 = "devnet",
     project_path: []const u8,

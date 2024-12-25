@@ -31,7 +31,7 @@ const BuildOptions = struct {
     }
 
     pub fn needLibC(self: @This()) bool {
-        return !self.target.getCpuArch().isWasm();
+        return !self.target.result.cpu.arch.isWasm();
     }
 
     const DebugOptions = struct {
@@ -100,14 +100,14 @@ fn getBuzzPrefix(b: *Build) ![]const u8 {
 pub fn build(b: *Build) !void {
     // Check minimum zig version
     const current_zig = builtin.zig_version;
-    const min_zig = std.SemanticVersion.parse("0.14.0-dev.1588+2111f4c38") catch return;
+    const min_zig = std.SemanticVersion.parse("0.13.0") catch return;
     if (current_zig.order(min_zig).compare(.lt)) {
         @panic(b.fmt("Your Zig version v{} does not meet the minimum build requirement of v{}", .{ current_zig, min_zig }));
     }
 
     const build_mode = b.standardOptimizeOption(.{});
     const target = b.standardTargetOptions(.{});
-    const is_wasm = target.getCpuArch().isWasm();
+    const is_wasm = target.result.cpu.arch.isWasm();
     const install_step = b.getInstallStep();
 
     var build_options = BuildOptions{
@@ -257,6 +257,11 @@ pub fn build(b: *Build) !void {
 
     const build_option_module = build_options.step(b);
 
+    // Create tools module
+    const tools_module = b.addModule("tools", .{
+        .root_source_file = b.path("src/tools/cli/main.zig"),
+    });
+
     // Add CLI tool executable
     const cli = b.addExecutable(.{
         .name = "buzz-cli",
@@ -268,10 +273,7 @@ pub fn build(b: *Build) !void {
 
     // Add dependencies and imports for CLI
     cli.root_module.addImport("build_options", build_option_module);
-    cli.root_module.addImport("clap", b.dependency("clap", .{
-        .target = target,
-        .optimize = build_mode,
-    }).module("clap"));
+    cli.root_module.addImport("tools", tools_module);
 
     var sys_libs = std.ArrayList([]const u8).init(b.allocator);
     defer sys_libs.deinit();
@@ -405,7 +407,7 @@ pub fn build(b: *Build) !void {
 
         if (lib_mimalloc) |mimalloc| {
             lib.linkLibrary(mimalloc);
-            if (lib.root_module.target.?.getOsTag() == .windows) {
+            if (lib.root_module.resolved_target.?.result.os.tag == .windows) {
                 lib.linkSystemLibrary("bcrypt");
             }
         }
@@ -501,7 +503,7 @@ pub fn build(b: *Build) !void {
 
             if (lib_mimalloc) |mimalloc| {
                 std_lib.linkLibrary(mimalloc);
-                if (std_lib.root_module.target.?.getOsTag() == .windows) {
+                if (std_lib.root_module.resolved_target.?.result.os.tag == .windows) {
                     std_lib.linkSystemLibrary("bcrypt");
                 }
             }
@@ -541,7 +543,7 @@ pub fn build(b: *Build) !void {
     }
     if (lib_mimalloc) |mimalloc| {
         tests.linkLibrary(mimalloc);
-        if (tests.root_module.target.?.getOsTag() == .windows) {
+        if (tests.root_module.resolved_target.?.result.os.tag == .windows) {
             tests.linkSystemLibrary("bcrypt");
         }
     }
@@ -550,13 +552,25 @@ pub fn build(b: *Build) !void {
     }
     tests.root_module.addImport("build_options", build_option_module);
 
+    // Add CLI tests
+    const cli_tests = b.addTest(.{
+        .root_source_file = b.path("test/cli/idl_test.zig"),
+        .target = target,
+        .optimize = build_mode,
+    });
+    cli_tests.root_module.addImport("tools", tools_module);
+    cli_tests.root_module.addImport("build_options", build_option_module);
+
     const test_step = b.step("test", "Run all the tests");
     const run_tests = b.addRunArtifact(tests);
+    const run_cli_tests = b.addRunArtifact(cli_tests);
 
     // Add CLI tool run step
     const run_cli = b.addRunArtifact(cli);
     const cli_step = b.step("cli", "Run the buzz-cli tool");
     cli_step.dependOn(&run_cli.step);
+
+    test_step.dependOn(&run_cli_tests.step);
     run_tests.cwd = b.path(".");
     run_tests.setEnvironmentVariable("BUZZ_PATH", try getBuzzPrefix(b));
     run_tests.step.dependOn(install_step); // wait for libraries to be installed
